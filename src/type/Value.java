@@ -13,4 +13,14 @@ public class Value {
 		V = _V;
 		Q = null;
 	}
+	
+	public void setValue(String _Q) {
+		Q = _Q;
+		V = -1;
+	}
+	
+	public void setValue(double _V) {
+		V = _V;
+		Q = null;
+	}
 }
