@@ -1,0 +1,33 @@
+package assembly;
+
+import type.ResItem;
+import type.Value;
+
+public class Register implements CDBReceiver {
+	public final static int REG_NUM = 10;
+	
+	private Value[] reg = new Value[REG_NUM];
+	
+	public Register() {
+		for (int i = 0; i < REG_NUM; ++i)
+			reg[i] = new Value(0);
+	}
+	
+	public Value getValue(int num) {
+		Value ret = null;
+		if (reg[num].Q != null)
+			ret = new Value(reg[num].Q);
+		else
+			ret = new Value(reg[num].V);
+		return ret;
+	}
+	
+	public void setValue(int num, String name) {
+		reg[num].Q = name;
+	}
+
+	@Override
+	public void receive(ResItem item, double val) {
+		// TODO update value
+	}
+}
