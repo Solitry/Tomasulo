@@ -20,7 +20,7 @@ public class AddExecutor implements Executor {
 	@Override
 	public boolean write(CDB cdb, int cycle) {
 		// GJH: Auto-generated method stub
-		if (running.restTime < 0) {
+		if (running != null && running.restTime < 0) {
 			double val = running.value[0].V + running.value[1].V * (isAdd ? 1 : -1);
 			cdb.receive(running, val);
 			running.ins.finish(Instruction.WB, cycle);
@@ -39,7 +39,7 @@ public class AddExecutor implements Executor {
 	@Override
 	public void tick(int cycle) {
 		// ZYF: Auto-generated method stub
-		if (running.restTime >= 0) {
+		if (running != null && running.restTime >= 0) {
 			--running.restTime;
 			if (running.restTime == 0)
 				running.ins.finish(Instruction.EX, cycle);

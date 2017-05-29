@@ -27,27 +27,34 @@ public class Memory implements Executor {
 
 	@Override
 	public void tick(int cycle) {
+		if (running == null)
+			return;
+		
 		if (running.restTime >= 0) {
 			--running.restTime;
-			if (running.restTime == 0)
+			if (running.restTime == 0) {
 				running.ins.finish(Instruction.EX, cycle);
+				if (running.ins.opLabel == Instruction.INSTR_ST_ID) {
+					store(running.ins.src1, running.value[0].V);
+					running = null;
+				}
+			}
 		}
 	}
 
 	@Override
 	public boolean write(CDB cdb, int cycle) {
+		if (running == null)
+			return false;
+		
 		if (running.restTime < 0) {
-			if (running.ins.opLabel == Instruction.INSTR_LD_ID) { // load
-				double val = load(running.ins.src1);
-				cdb.receive(running, val);
-				running.ins.finish(Instruction.WB, cycle);
-				running = null;
-				return true;
-			} else { // store
-				store(running.ins.src1, running.value[0].V);
-				running = null;
-				return false;
-			}
+			assert(running.ins.opLabel == Instruction.INSTR_LD_ID);
+			
+			double val = load(running.ins.src1);
+			cdb.receive(running, val);
+			running.ins.finish(Instruction.WB, cycle);
+			running = null;
+			return true;
 		}
 		return false;
 	}
