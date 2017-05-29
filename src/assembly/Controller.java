@@ -66,7 +66,7 @@ public class Controller {
 		
 		Controller con = new Controller();
 		con.iq.addIns(list);
-		for(int i = 0; i < 50 && !con.iq.isFinish(); ++i){
+		for(int i = 0; i < 200 && !con.iq.isFinish(); ++i){
 			System.err.println("Tick " + i);
 			con.run(i);
 		}
