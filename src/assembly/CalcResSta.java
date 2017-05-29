@@ -44,8 +44,8 @@ public class CalcResSta implements ResSta, CDBReceiver {
 		// GJH: Auto-generated method stub
 		for(ResItem x : res)
 			if(!x.busy){
-				x.ins = ins;
 				x.busy = true;
+				x.ins = ins;
 				x.value[0] = reg.getValue(ins.src0);
 				x.value[1] = reg.getValue(ins.src1);
 				reg.setValue(ins.dst, x.name);
