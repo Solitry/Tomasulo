@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import type.ResItem;
 
 public class CDB {
+	
+	public final boolean MULTI_CDB = false;
+	
 	private ArrayList<CDBReceiver> rec = new ArrayList<CDBReceiver>();
 	private ArrayList<Executor> sed = new ArrayList<Executor>();
 	
@@ -22,7 +25,11 @@ public class CDB {
 	}
 	
 	public void listen(int cycle) {
-		for (Executor it: sed)
-			it.write(this, cycle);
+		// TODO access clock
+		for (Executor it: sed) {
+			boolean ret = it.write(this, cycle);
+			if (ret && !MULTI_CDB)
+				break;
+		}
 	}
 }

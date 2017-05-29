@@ -20,18 +20,31 @@ public class MulExecutor implements Executor{
 	}
 
 	@Override
-	public void write(CDB cdb, int cycle) {
+	public boolean write(CDB cdb, int cycle) {
 		// GJH: Auto-generated method stub
-		if (--running.restTime < 0) {
+		if (running.restTime < 0) {
 			double val = running.value[0].V * Math.pow(running.value[1].V, isMul ? 1 : -1);
 			cdb.receive(running, val);
+			running.ins.finish(Instruction.WB, cycle);
 			running = null;
+			return true;
 		}
+		return false;
 	}
 
 	@Override
 	public boolean full() {
 		// GJH: Auto-generated method stub
 		return running != null;
+	}
+	
+	@Override
+	public void tick(int cycle) {
+		// ZYF: Auto-generated method stub
+		if (running.restTime >= 0) {
+			--running.restTime;
+			if (running.restTime == 0)
+				running.ins.finish(Instruction.ID, cycle);
+		}
 	}
 }

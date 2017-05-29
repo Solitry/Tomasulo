@@ -2,6 +2,7 @@ package assembly;
 
 import type.Instruction;
 import type.ResItem;
+import type.Value;
 
 public class CalcResSta implements ResSta, CDBReceiver {
 	private String name;
@@ -23,17 +24,17 @@ public class CalcResSta implements ResSta, CDBReceiver {
 	@Override
 	public void receive(ResItem item, double val) {
 		// GJH: Auto-generated method stub
-		for(int i = 0; i < resSize; ++i)
-			for(int j = 0; j < 2; ++j)
-				if(res[i].value[j].Q == item.name)
-					res[i].value[j].setValue(val);
+		for(ResItem x : res)
+			for(Value y : x.value)
+				if(y.Q == item.name)
+					y.setValue(val);
 	}
 
 	@Override
 	public boolean full(int arg) {
 		// GJH: Auto-generated method stub
-		for(int i = 0; i < resSize; ++i)
-			if(!res[i].busy)
+		for(ResItem x : res)
+			if(!x.busy)
 				return false;
 		return true;
 	}
@@ -41,20 +42,20 @@ public class CalcResSta implements ResSta, CDBReceiver {
 	@Override
 	public void getIns(Instruction ins) {
 		// GJH: Auto-generated method stub
-		for(int i = 0; i < resSize; ++i)
-			if(!res[i].busy){
-				res[i].ins = ins;
-				res[i].busy = true;
-				res[i].value[0] = reg.getValue(ins.src0);
-				res[i].value[1] = reg.getValue(ins.src1);
-				reg.setValue(ins.dst, res[i].name);
+		for(ResItem x : res)
+			if(!x.busy){
+				x.ins = ins;
+				x.busy = true;
+				x.value[0] = reg.getValue(ins.src0);
+				x.value[1] = reg.getValue(ins.src1);
+				reg.setValue(ins.dst, x.name);
 				break;
 			}
 	}
 
 	@Override
 	public void send(int cycle) {
-		// TODO Auto-generated method stub, need add clock
+		// TODO add clock
 		for(int i = 0; i < resSize && !exe.full(); ++i)
 			if(res[i].busy && res[i].value[0].ready() && res[i].value[1].ready())
 				exe.get(res[i]);

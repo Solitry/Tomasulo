@@ -37,15 +37,4 @@ public class InstrQueue {
 		// TODO check if the queue is empty and return
 		return true;
 	}
-	
-	/**
-	 * record the instruction's finish time of each stage
-	 * @param ins
-	 * @param stage
-	 * @param cycle
-	 *   the time
-	 */
-	public void compIns(Instruction ins, int stage, int cycle) {
-		// TODO set time_table[ins.insLabel][stage] = cycle
-	}
 }

@@ -32,6 +32,15 @@ public class Instruction {
 	 */
 	public int src0, src1, dst;
 	
+	public static int ID = 0;
+	public static int EX = 1;
+	public static int WB = 2;
+	public int[] finishTime = new int[3];
+	
+	public void finish(int stage, int cycle) {
+		finishTime[stage] = cycle;
+	}
+	
 	public Instruction(String str, int count) {
 		// GJH: translate str into instruction-type
 		int p0 = str.indexOf(' ');

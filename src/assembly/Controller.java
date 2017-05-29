@@ -42,6 +42,10 @@ public class Controller {
 	}
 	
 	public void run(int cycle) {
+		mem.tick(cycle);
+		adder.tick(cycle);
+		multer.tick(cycle);
+		
 		cdb.listen(cycle);
 		
 		iq.sendIns(cycle);
