@@ -29,6 +29,7 @@ public class Register implements CDBReceiver {
 	@Override
 	public void receive(ResItem item, double val) {
 		// GJH: update value
-		reg[item.ins.dst].setValue(val);
+		if (item.ins.dst >= 0)
+			reg[item.ins.dst].setValue(val);
 	}
 }

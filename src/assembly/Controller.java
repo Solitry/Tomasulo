@@ -1,7 +1,5 @@
 package assembly;
 
-import type.Instruction;
-
 public class Controller {
 	private InstrQueue iq = null;
 	private Register reg = null;
@@ -26,8 +24,8 @@ public class Controller {
 		multer = new MulExecutor();
 		
 		mb = new MemBuffer(mem, reg);
-		ar = new CalcResSta("Add", 3, adder, reg);
-		mr = new CalcResSta("Mult", 3, multer, reg);
+		ar = new CalcResSta(CalcResSta.ADDER, adder, reg);
+		mr = new CalcResSta(CalcResSta.MULTER, multer, reg);
 		
 		iq = new InstrQueue(mb, ar, mr);
 		
@@ -39,6 +37,7 @@ public class Controller {
 		cdb.addSender(mem);
 		cdb.addSender(adder);
 		cdb.addSender(multer);
+		cdb.addSender(mb);
 	}
 	
 	public void run(int cycle) {

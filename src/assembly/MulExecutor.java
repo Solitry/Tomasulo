@@ -44,7 +44,7 @@ public class MulExecutor implements Executor{
 		if (running.restTime >= 0) {
 			--running.restTime;
 			if (running.restTime == 0)
-				running.ins.finish(Instruction.ID, cycle);
+				running.ins.finish(Instruction.EX, cycle);
 		}
 	}
 }

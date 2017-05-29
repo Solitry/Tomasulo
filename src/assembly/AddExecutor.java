@@ -4,12 +4,11 @@ import type.Instruction;
 import type.ResItem;
 
 public class AddExecutor implements Executor {
-	
 	public final static int INSTR_ADD_TIME = 2;
-	
+
 	private ResItem running = null;
 	private boolean isAdd = false;
-	
+
 	@Override
 	public void get(ResItem item) {
 		// GJH: Auto-generated method stub
@@ -43,7 +42,7 @@ public class AddExecutor implements Executor {
 		if (running.restTime >= 0) {
 			--running.restTime;
 			if (running.restTime == 0)
-				running.ins.finish(Instruction.ID, cycle);
+				running.ins.finish(Instruction.EX, cycle);
 		}
 	}
 }

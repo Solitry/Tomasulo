@@ -3,45 +3,112 @@ package assembly;
 import type.Instruction;
 import type.ResItem;
 
-public class MemBuffer implements ResSta, CDBReceiver {
+public class MemBuffer implements ResSta, CDBReceiver, CDBSender {
 	public final static int LD_BUF_SIZE = 3;
 	public final static int ST_BUF_SIZE = 3;
-	
+	public final static String LD = "Load";
+	public final static String ST = "Store";
+
 	private Memory mem = null;
 	private Register reg = null;
 	private ResItem[] loadBuf = new ResItem[LD_BUF_SIZE];
 	private ResItem[] storeBuf = new ResItem[ST_BUF_SIZE];
-	
+
 	public MemBuffer(Memory _mem, Register _reg) {
 		mem = _mem;
 		reg = _reg;
-		
-		for (int i = 0; i < LD_BUF_SIZE; ++i)
+
+		for (int i = 0; i < LD_BUF_SIZE; ++i) {
 			loadBuf[i] = new ResItem();
-		for (int i = 0; i < ST_BUF_SIZE; ++i)
+			loadBuf[i].name = LD + i;
+		}
+		for (int i = 0; i < ST_BUF_SIZE; ++i) {
 			storeBuf[i] = new ResItem();
+			storeBuf[i].name = ST + i;
+		}
 	}
 
 	@Override
 	public void getIns(Instruction ins) {
-		// TODO get ins and save as ResItem
-		// TODO maintain the reg
+		ResItem it = null;
+		if (ins.opLabel == Instruction.INSTR_LD_ID) { // load
+			for (ResItem x: loadBuf)
+				if (!x.busy) {
+					it = x;
+					break;
+				}
+			it.ins = ins;
+			it.busy = true;
+			it.value[0] = null;
+			it.value[1] = null;
+			reg.setValue(ins.dst, it.name);
+		} else { // store
+			for (ResItem x: storeBuf)
+				if (!x.busy) {
+					it = x;
+					break;
+				}
+			it.ins = ins;
+			it.busy = true;
+			it.value[0] = reg.getValue(ins.src0);
+			it.value[1] = null;
+		}
 	}
-
+	
+	private boolean beHead(ResItem x) {
+		/* use FIFO on the queue of same-address ResItem
+		 * to use FIFO on all LD/ST instructions, use label only
+		 */
+		int addr = x.ins.src1;
+		int label = x.ins.insLabel;
+		for (ResItem it: loadBuf)
+			if (it.ins.src1 == addr && it.ins.insLabel < label)
+				return false;
+		for (ResItem it: storeBuf)
+			if (it.ins.src1 == addr && it.ins.insLabel < label)
+				return false;
+		return true;
+	}
+	
 	@Override
 	public void send(int cycle) {
-		// TODO check if the mem is full and send item to it
-		// TODO set stage 1 of ins finished at cycle
+		ResItem ret = null;
+		if (!mem.full()) {	
+			for (int i = 0; i < ST_BUF_SIZE && ret == null; ++i)
+				if (beHead(storeBuf[i]) && storeBuf[i].value[0].ready())
+					ret = storeBuf[i];
+			for (int i = 0; i < LD_BUF_SIZE && ret == null; ++i)
+				if (beHead(loadBuf[i]))
+					ret = loadBuf[i];
+			if (ret != null)
+				mem.get(ret);
+		}
 	}
 
 	@Override
 	public boolean full(int arg) {
-		//TODO check if buffer is full, arg = 0 for LD, arg = 1 for ST
-		return false;
+		if (arg == 0) {
+			for (ResItem it : loadBuf)
+				if (!it.busy)
+					return false;
+		} else {
+			for (ResItem it : storeBuf)
+				if (!it.busy)
+					return false;
+		}
+		return true;
 	}
 
 	@Override
 	public void receive(ResItem item, double val) {
-		// TODO update value
+		for (ResItem it : storeBuf)
+			if (it.value[0].wait(item.name))
+				it.value[0].setValue(val);
+	}
+
+	@Override
+	public boolean write(CDB cdb, int cycle) {
+		// TODO bypass of load instruction
+		return false;
 	}
 }

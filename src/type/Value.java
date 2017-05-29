@@ -25,6 +25,10 @@ public class Value {
 	}
 	
 	public boolean ready() {
-		return Q != null;
+		return Q == null;
+	}
+	
+	public boolean wait(String name) {
+		return !ready() && Q.equals(name);
 	}
 }
