@@ -44,11 +44,13 @@ public class Instruction {
 	public int[] finishTime = new int[STAGE_NUM]; // -1 means no value
 
 	public void finish(int stage, int cycle) {
+		System.err.println("ins " + insLabel + " stage " + stage + " finish");
 		finishTime[stage] = cycle;
 	}
 
 	public Instruction(String str, int count) {
 		// GJH: translate str into instruction-type
+		System.err.println(str + " " + count);
 		int p0 = str.indexOf(' ');
 		opName = str.substring(0, p0);
 		for (int i = 0; i < 6; ++i)
@@ -75,10 +77,12 @@ public class Instruction {
 			finishTime[i] = -1;
 	}
 
+	public boolean isFinish(){
+		return finishTime[WB] != -1;
+	}
+	
 	public static void main(String[] args) {
-		Instruction ins = new Instruction("ADDD F1,F2,F3", 0);
-		System.out.println(ins.opLabel + " " + ins.dst + " " + ins.src0 + " " + ins.src1);
-		ins = new Instruction("LD F9,10", 0);
+		Instruction ins = new Instruction("ADDD F6,F0,F8", 0);
 		System.out.println(ins.opLabel + " " + ins.dst + " " + ins.src0 + " " + ins.src1);
 	}
 }

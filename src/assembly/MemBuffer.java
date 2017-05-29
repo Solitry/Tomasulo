@@ -59,13 +59,16 @@ public class MemBuffer implements ResSta, CDBReceiver, CDBSender {
 		/* use FIFO on the queue of same-address ResItem
 		 * to use FIFO on all LD/ST instructions, use label only
 		 */
+		if(!x.busy)
+			return false;
+		
 		int addr = x.ins.src1;
 		int label = x.ins.insLabel;
 		for (ResItem it: loadBuf)
-			if (it.ins.src1 == addr && it.ins.insLabel < label)
+			if (it.busy && it.ins.src1 == addr && it.ins.insLabel < label)
 				return false;
 		for (ResItem it: storeBuf)
-			if (it.ins.src1 == addr && it.ins.insLabel < label)
+			if (it.busy && it.ins.src1 == addr && it.ins.insLabel < label)
 				return false;
 		return true;
 	}
@@ -102,7 +105,7 @@ public class MemBuffer implements ResSta, CDBReceiver, CDBSender {
 	@Override
 	public void receive(ResItem item, double val) {
 		for (ResItem it : storeBuf)
-			if (it.value[0].wait(item.name))
+			if (it.busy && it.value[0].wait(item.name))
 				it.value[0].setValue(val);
 	}
 

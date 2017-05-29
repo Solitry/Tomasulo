@@ -4,7 +4,7 @@ import type.ResItem;
 import type.Value;
 
 public class Register implements CDBReceiver {
-	public final static int REG_NUM = 10;
+	public final static int REG_NUM = 32;
 	
 	private Value[] reg = new Value[REG_NUM];
 	
