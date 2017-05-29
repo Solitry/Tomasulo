@@ -4,21 +4,13 @@
  * and open the template in the editor.
  */
 package tomasulodisplay;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
-import javafx.geometry.Insets;
-import javafx.scene.control.Label;  
 import javafx.scene.control.TableColumn;  
-import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableView;  
-import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
 /**
  *
  * @author meepo

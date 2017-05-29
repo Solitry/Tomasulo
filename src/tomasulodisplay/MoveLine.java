@@ -5,7 +5,6 @@
  */
 package tomasulodisplay;
 
-import java.util.ArrayList;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
