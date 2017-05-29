@@ -1,5 +1,7 @@
 package assembly;
 
+import java.util.ArrayList;
+
 public class Controller {
 	private InstrQueue iq = null;
 	private Register reg = null;
@@ -52,5 +54,21 @@ public class Controller {
 		mb.send(cycle);
 		ar.send(cycle);
 		mr.send(cycle);
+	}
+	
+	public static void main(String[] args){
+		ArrayList<String> list = new ArrayList<String>();
+		list.add("DIVD F0,F2,F4");
+		list.add("ADDD F6,F0,F8");
+		list.add("ST F6,0");
+		list.add("SUBD F8,F10,F8");
+		list.add("MULD F6,F10,F8");
+		
+		Controller con = new Controller();
+		con.iq.addIns(list);
+		for(int i = 0; i < 50 && !con.iq.isFinish(); ++i){
+			System.err.println("Tick " + i);
+			con.run(i);
+		}
 	}
 }

@@ -38,9 +38,10 @@ public class CalcResSta implements ResSta, CDBReceiver {
 	public void receive(ResItem item, double val) {
 		// GJH: Auto-generated method stub
 		for (ResItem x : res)
-			for (Value y : x.value)
-				if (y.wait(item.name))
-					y.setValue(val);
+			if(x.busy)
+				for (Value y : x.value)
+					if (y.wait(item.name))
+						y.setValue(val);
 	}
 
 	@Override
@@ -55,6 +56,7 @@ public class CalcResSta implements ResSta, CDBReceiver {
 	@Override
 	public void getIns(Instruction ins) {
 		// GJH: Auto-generated method stub
+		System.err.println("GetIns " + ins.insLabel);
 		for (ResItem x : res)
 			if (!x.busy) {
 				x.busy = true;

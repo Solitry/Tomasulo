@@ -34,6 +34,7 @@ public class Memory implements Executor {
 			--running.restTime;
 			if (running.restTime == 0) {
 				running.ins.finish(Instruction.EX, cycle);
+				running.ins.finish(Instruction.WB, cycle);
 				if (running.ins.opLabel == Instruction.INSTR_ST_ID) {
 					store(running.ins.src1, running.value[0].V);
 					running = null;

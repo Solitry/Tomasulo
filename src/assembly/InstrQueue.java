@@ -10,14 +10,16 @@ import type.Instruction;
  */
 public class InstrQueue {
 	private ResSta mem = null, add = null, mult = null;
-	private ArrayList<String> list = null;
+	private ArrayList<String> strList = null;
+	private ArrayList<Instruction> insList = null;
 	private int pos = 0;
 	
 	public InstrQueue(ResSta _mem, ResSta _add, ResSta _mult) {
 		mem = _mem;
 		add = _add;
 		mult = _mult;
-		list = new ArrayList<String>();
+		strList = new ArrayList<String>();
+		insList = new ArrayList<Instruction>();
 	}
 	
 	/**
@@ -29,14 +31,18 @@ public class InstrQueue {
 		// get first instruction, use offer/poll if ins is Queue
 		// send i to mem/add/mult depend on i.opLabel use xxx.getIns(i)
 		// set stage 0 of ins finished at cycle
-		String instrStr = list.get(pos);
-		Instruction i = new Instruction(instrStr, pos);
+		if(empty())
+			return;
+		
+		Instruction i = insList.get(pos);
+		System.err.println("SendIns " + i.opLabel);
 		switch(i.opLabel){
 		case Instruction.INSTR_ADD_ID:
 		case Instruction.INSTR_SUB_ID:
 			if(!add.full(0)){
 				add.getIns(i);
 				++pos;
+				i.finish(Instruction.ID, cycle);
 			}
 			break;
 		case Instruction.INSTR_MUL_ID:
@@ -44,13 +50,21 @@ public class InstrQueue {
 			if(!mult.full(0)){
 				mult.getIns(i);
 				++pos;
+				i.finish(Instruction.ID, cycle);
 			}
 			break;
 		case Instruction.INSTR_LD_ID:
-		case Instruction.INSTR_ST_ID:
 			if(!mem.full(0)){
 				mem.getIns(i);
 				++pos;
+				i.finish(Instruction.ID, cycle);
+			}
+			break;
+		case Instruction.INSTR_ST_ID:
+			if(!mem.full(1)){
+				mem.getIns(i);
+				++pos;
+				i.finish(Instruction.ID, cycle);
 			}
 			default:
 		}
@@ -61,19 +75,32 @@ public class InstrQueue {
 	 */
 	public boolean empty() {
 		// GJH check if the queue is empty and return
-		return pos < list.size();
+		return pos >= insList.size();
 	}
 	
 	public void reset() {
 		pos = 0;
-		list.clear();
+		strList.clear();
+		insList.clear();
 	}
 	
 	public void addIns(ArrayList<String> newList){
-		list.addAll(newList);
+		for(String str : newList){
+			strList.add(str);
+			insList.add(new Instruction(str, insList.size()));
+		}
 	}
 	
 	public int getPos(){
 		return pos;
+	}
+	
+	public boolean isFinish(){
+		for(Instruction i : insList)
+			if(!i.isFinish()){
+				System.err.println("Unfinish " + i.insLabel);
+				return false;
+			}
+		return true;
 	}
 }
