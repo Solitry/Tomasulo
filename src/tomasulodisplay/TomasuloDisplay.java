@@ -21,6 +21,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.Border;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -118,8 +119,9 @@ public class TomasuloDisplay extends Application {
             File file = fileChooser.showOpenDialog(primaryStage);
             //　解析并设置指令的代码
         });  
-        
         Button InputButton = new Button("Input");         
+        
+       
         InputButton.setStyle(ButtonStyle);
         InputButton.setOnAction((ActionEvent e) -> {  
             textArea.setText("");
