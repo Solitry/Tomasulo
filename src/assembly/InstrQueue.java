@@ -13,7 +13,6 @@ public class InstrQueue {
 		mem = _mem;
 		add = _add;
 		mult = _mult;
-		// TODO add window support, maybe change the type of ins
 	}
 	
 	/**

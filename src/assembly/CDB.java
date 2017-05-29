@@ -20,12 +20,15 @@ public class CDB {
 	}
 	
 	public void receive(ResItem item, double val) {
+		// set res free
+		item.busy = false;
+		// broadcast
 		for (CDBReceiver it: rec)
 			it.receive(item, val);
 	}
 	
 	public void listen(int cycle) {
-		// TODO access clock
+		// TODO add clock
 		for (CDBSender it: sed) {
 			boolean ret = it.write(this, cycle);
 			if (ret && !MULTI_CDB)
