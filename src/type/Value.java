@@ -23,4 +23,8 @@ public class Value {
 		V = _V;
 		Q = null;
 	}
+	
+	public boolean ready() {
+		return Q != null;
+	}
 }

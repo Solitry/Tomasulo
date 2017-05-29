@@ -24,7 +24,7 @@ public class InstrQueue {
 		// TODO check if the ResSta is full, for mem, arg = 0 for LD, arg = 1 for ST
 		String instrStr = null;
 		// TODO get first instruction, use offer/poll if ins is Queue
-		Instruction i = new Instruction(instrStr);
+		Instruction i = new Instruction(instrStr, 0);
 		// TODO send i to mem/add/mult depend on i.opLabel use xxx.getIns(i)
 		
 		// TODO set stage 0 of ins finished at cycle

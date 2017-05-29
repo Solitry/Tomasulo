@@ -32,7 +32,30 @@ public class Instruction {
 	 */
 	public int src0, src1, dst;
 	
-	public Instruction(String str) {
-		// TODO: translate str into instruction-type
+	public Instruction(String str, int count) {
+		// GJH: translate str into instruction-type
+		int p0 = str.indexOf(' ');
+		opName = str.substring(0, p0);
+		for(int i = 0; i < 6; ++i)
+			if(opName.equals(INSTR_TYPE[i]))
+				opLabel = i;
+		int p1 = str.indexOf(',');
+		if(opLabel < 4){
+			int p2 = str.indexOf(',', p1 + 1);
+			dst = Integer.parseInt(str.substring(p0 + 2, p1));
+			src0 = Integer.parseInt(str.substring(p1 + 2, p2));
+			src1 = Integer.parseInt(str.substring(p2 + 2));
+		}else{
+			src0 = Integer.parseInt(str.substring(p0 + 2, p1));
+			src1 = Integer.parseInt(str.substring(p1 + 1));
+		}
+		insLabel = count;
+	}
+	
+	public static void main(String[] args){
+		Instruction ins = new Instruction("ADDD F1,F2,F3", 0);
+		System.out.println(ins.opLabel +  " " + ins.dst + " " + ins.src0 + " " + ins.src1);
+		ins = new Instruction("LD F9,10",0);
+		System.out.println(ins.opLabel +  " " + ins.dst + " " + ins.src0 + " " + ins.src1);		
 	}
 }

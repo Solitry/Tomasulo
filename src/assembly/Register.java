@@ -23,11 +23,12 @@ public class Register implements CDBReceiver {
 	}
 	
 	public void setValue(int num, String name) {
-		reg[num].Q = name;
+		reg[num].setValue(name);
 	}
 
 	@Override
 	public void receive(ResItem item, double val) {
-		// TODO update value
+		// GJH: update value
+		reg[item.ins.dst].setValue(val);
 	}
 }
