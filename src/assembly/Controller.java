@@ -11,8 +11,8 @@ public class Controller {
 	private CalcResSta mr = null;
 	
 	private Memory mem = null;
-	private CalcExecutor adder = null;
-	private CalcExecutor multer = null;
+	private AddExecutor adder = null;
+	private MulExecutor multer = null;
 	
 	private CDB cdb = null;
 	
@@ -22,12 +22,12 @@ public class Controller {
 		cdb = new CDB();
 		
 		mem = new Memory();
-		adder = new CalcExecutor(Instruction.INSTR_ADD_ID, Instruction.INSTR_SUB_ID, 2, 2);
-		multer = new CalcExecutor(Instruction.INSTR_MUL_ID, Instruction.INSTR_DIV_ID, 10, 40);
+		adder = new AddExecutor();
+		multer = new MulExecutor();
 		
 		mb = new MemBuffer(mem, reg);
-		ar = new CalcResSta(3, adder, reg);
-		mr = new CalcResSta(3, multer, reg);
+		ar = new CalcResSta("Add", 3, adder, reg);
+		mr = new CalcResSta("Mult", 3, multer, reg);
 		
 		iq = new InstrQueue(mb, ar, mr);
 		
@@ -44,10 +44,10 @@ public class Controller {
 	public void run(int cycle) {
 		cdb.listen(cycle);
 		
+		iq.sendIns(cycle);
+		
 		mb.send(cycle);
 		ar.send(cycle);
 		mr.send(cycle);
-		
-		iq.sendIns(cycle);
 	}
 }

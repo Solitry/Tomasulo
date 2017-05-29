@@ -54,7 +54,7 @@ public class CalcResSta implements ResSta, CDBReceiver {
 
 	@Override
 	public void send(int cycle) {
-		// GJH: Auto-generated method stub
+		// TODO Auto-generated method stub, need add clock
 		for(int i = 0; i < resSize && !exe.full(); ++i)
 			if(res[i].busy && res[i].value[0].ready() && res[i].value[1].ready())
 				exe.get(res[i]);
