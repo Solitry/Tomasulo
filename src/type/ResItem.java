@@ -10,5 +10,7 @@ public class ResItem {
 	public Value[] value = new Value[2];
 	
 	public int addrRely = -1; // for LD/ST
+	public Value loadRelyVal = null; // for LD
+	
 	public int restTime = -1; // for Executor
 }

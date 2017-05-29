@@ -3,7 +3,7 @@ package assembly;
 import type.Instruction;
 import type.ResItem;
 
-public class MemBuffer implements ResSta, CDBReceiver {
+public class MemBuffer implements ResSta, CDBReceiver, CDBSender {
 	public final static int LD_BUF_SIZE = 3;
 	public final static int ST_BUF_SIZE = 3;
 	
@@ -42,6 +42,14 @@ public class MemBuffer implements ResSta, CDBReceiver {
 
 	@Override
 	public void receive(ResItem item, double val) {
-		// TODO update value
+		for (ResItem it: storeBuf)
+			if (it.value[0].Q == item.name)
+				it.value[0].setValue(val);
+	}
+
+	@Override
+	public boolean write(CDB cdb, int cycle) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

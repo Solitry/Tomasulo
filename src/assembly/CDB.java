@@ -9,13 +9,13 @@ public class CDB {
 	public final boolean MULTI_CDB = false;
 	
 	private ArrayList<CDBReceiver> rec = new ArrayList<CDBReceiver>();
-	private ArrayList<Executor> sed = new ArrayList<Executor>();
+	private ArrayList<CDBSender> sed = new ArrayList<CDBSender>();
 	
 	public void addReceiver(CDBReceiver _rec) {
 		rec.add(_rec);
 	}
 	
-	public void addSender(Executor _sed) {
+	public void addSender(CDBSender _sed) {
 		sed.add(_sed);
 	}
 	
@@ -26,7 +26,7 @@ public class CDB {
 	
 	public void listen(int cycle) {
 		// TODO access clock
-		for (Executor it: sed) {
+		for (CDBSender it: sed) {
 			boolean ret = it.write(this, cycle);
 			if (ret && !MULTI_CDB)
 				break;

@@ -5,17 +5,28 @@ import type.ResItem;
 import type.Value;
 
 public class CalcResSta implements ResSta, CDBReceiver {
+	public static String ADDER = "Add";
+	public static String MULTER = "Mult";
+	public static int ADDER_RES_SIZE = 3;
+	public static int MULTER_RES_SIZE = 2;
+	
 	private String name;
 	private int resSize = 0;
 	private Executor exe = null;
 	private Register reg = null;
 	private ResItem[] res = null;
 	
-	public CalcResSta(String _name, int _resSize, Executor _exe, Register _reg) {
-		resSize = _resSize;
+	public CalcResSta(String _name, Executor _exe, Register _reg) {
+		//resSize = _resSize;
+		if (_name.equals(ADDER))
+			resSize = ADDER_RES_SIZE;
+		else
+			resSize = MULTER_RES_SIZE;
+		name = _name;
+		
 		exe = _exe;
 		reg = _reg;
-		// GJH: alloc the resSize
+		// GJH: allocate the resSize
 		res = new ResItem[resSize];
 		for(int i = 0; i < resSize; ++i)
 			res[i].name = name + i;
