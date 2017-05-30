@@ -6,6 +6,7 @@ public class ResItem {
 	public Instruction ins = null;
 	
 	public boolean busy = false;
+	public boolean in = false;
 	
 	public Value[] value = new Value[2];
 	

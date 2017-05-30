@@ -111,7 +111,7 @@ public class InstrQueue {
 		} else
 			System.out.println("");
 		
-		System.out.format("%-3s%-16s%-4s%-4s%-4s\n", "St", "Ins", "ID", "EX", "WB");
+		System.out.format("%-3s%-16s%-4s%-4s%-4s%-4s\n", "St", "Ins", "ID", "EN", "EX", "WB");
 		for (int i = 0; i < insList.size(); ++i) {
 			System.out.print(i == pos? " * " : "   ");
 			System.out.format("%-16s", strList.get(i));

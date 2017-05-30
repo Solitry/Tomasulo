@@ -10,7 +10,7 @@ public class Controller {
 	private CalcResSta ar = null;
 	private CalcResSta mr = null;
 	
-	private Memory mem = null;
+	private FlowMemory mem = null;
 	private AddExecutor adder = null;
 	private MulExecutor multer = null;
 	
@@ -21,7 +21,7 @@ public class Controller {
 		reg = new Register();
 		cdb = new CDB();
 		
-		mem = new Memory();
+		mem = new FlowMemory();
 		adder = new AddExecutor();
 		multer = new MulExecutor();
 		
@@ -73,12 +73,29 @@ public class Controller {
 	
 	public static void main(String[] args){
 		ArrayList<String> list = new ArrayList<String>();
+		/*
 		list.add("LD F2,0");
 		list.add("DIVD F0,F2,F4");
 		list.add("ADDD F6,F0,F8");
 		list.add("ST F6,0");
 		list.add("SUBD F8,F10,F8");
 		list.add("MULD F6,F10,F8");
+		*/
+		/*
+		list.add("LD F6,34");
+		list.add("LD F2,45");
+		list.add("MULD F0,F2,F4");
+		list.add("SUBD F8,F6,F2");
+		list.add("DIVD F10,F0,F6");
+		list.add("ADDD F6,F8,F2");
+		*/
+		
+		list.add("LD F0,80");
+		list.add("MULD F4,F0,F2");
+		list.add("ST F4,80");
+		list.add("LD F0,80");
+		list.add("MULD F4,F0,F2");
+		list.add("ST F4,80");
 		
 		Controller con = new Controller();
 		con.iq.addIns(list);

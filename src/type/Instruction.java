@@ -39,10 +39,11 @@ public class Instruction {
 	 */
 	public int src0, src1, dst;
 	
-	public final static int STAGE_NUM = 3;
+	public final static int STAGE_NUM = 4;
 	public final static int ID = 0;
-	public final static int EX = 1;
-	public final static int WB = 2;
+	public final static int EN = 1;
+	public final static int EX = 2;
+	public final static int WB = 3;
 	public int[] finishTime = new int[STAGE_NUM]; // -1 means no value
 
 	public void finish(int stage, int cycle) {

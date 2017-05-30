@@ -9,12 +9,12 @@ public class MemBuffer implements ResSta, CDBReceiver, CDBSender {
 	public final static String LD = "Load";
 	public final static String ST = "Store";
 
-	private Memory mem = null;
+	private FlowMemory mem = null;
 	private Register reg = null;
 	private ResItem[] loadBuf = new ResItem[LD_BUF_SIZE];
 	private ResItem[] storeBuf = new ResItem[ST_BUF_SIZE];
 
-	public MemBuffer(Memory _mem, Register _reg) {
+	public MemBuffer(FlowMemory _mem, Register _reg) {
 		mem = _mem;
 		reg = _reg;
 
@@ -39,6 +39,7 @@ public class MemBuffer implements ResSta, CDBReceiver, CDBSender {
 				}
 			it.ins = ins;
 			it.busy = true;
+			it.in = false;
 			it.restTime = -1;
 			it.value[0] = null;
 			it.value[1] = null;
@@ -51,6 +52,7 @@ public class MemBuffer implements ResSta, CDBReceiver, CDBSender {
 				}
 			it.ins = ins;
 			it.busy = true;
+			it.in = false;
 			it.restTime = -1;
 			it.value[0] = reg.getValue(ins.src0);
 			it.value[1] = null;
@@ -67,10 +69,10 @@ public class MemBuffer implements ResSta, CDBReceiver, CDBSender {
 		int addr = x.ins.src1;
 		int label = x.ins.insLabel;
 		for (ResItem it: loadBuf)
-			if (it.busy && it.ins.src1 == addr && it.ins.insLabel < label)
+			if (it.busy && !it.in && it.ins.src1 == addr && it.ins.insLabel < label)
 				return false;
 		for (ResItem it: storeBuf)
-			if (it.busy && it.ins.src1 == addr && it.ins.insLabel < label)
+			if (it.busy && !it.in && it.ins.src1 == addr && it.ins.insLabel < label)
 				return false;
 		return true;
 	}
@@ -80,13 +82,16 @@ public class MemBuffer implements ResSta, CDBReceiver, CDBSender {
 		ResItem ret = null;
 		if (!mem.full()) {	
 			for (int i = 0; i < ST_BUF_SIZE && ret == null; ++i)
-				if (beHead(storeBuf[i]) && storeBuf[i].value[0].ready())
+				if (beHead(storeBuf[i]) && storeBuf[i].value[0].ready() && !storeBuf[i].in)
 					ret = storeBuf[i];
 			for (int i = 0; i < LD_BUF_SIZE && ret == null; ++i)
-				if (beHead(loadBuf[i]))
+				if (beHead(loadBuf[i]) && !loadBuf[i].in)
 					ret = loadBuf[i];
-			if (ret != null)
+			if (ret != null) {
+				ret.ins.finish(Instruction.EN, cycle);
 				mem.get(ret);
+				ret.in = true;
+			}
 		}
 	}
 
@@ -119,7 +124,6 @@ public class MemBuffer implements ResSta, CDBReceiver, CDBSender {
 	
 	public void log() {
 		System.out.println("MemBuffer:");
-
 		System.out.format("%-7s%-6s%-6s%-16s%-10s%-6s\n", "name", "busy", "time", "Ins", "reg", "addr");
 
 		for (ResItem it : loadBuf) {
