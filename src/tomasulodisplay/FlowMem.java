@@ -11,21 +11,21 @@ import javafx.beans.property.SimpleStringProperty;
  *
  * @author meepo
  */
-public class Reg {
+public class FlowMem {
 	static int MAXNUM = 2;
 	public SimpleStringProperty[] items = null;
 	
-    public Reg() {
+    public FlowMem() {
     	items = new SimpleStringProperty[MAXNUM];
     	for(int i = 0; i < MAXNUM; ++i)
     		items[i] = new SimpleStringProperty("");
     }
     
-    public String getName() {
+    public String getAddr() {
         return items[0].get();
     }
     
-    public SimpleStringProperty NameProperty() {
+    public SimpleStringProperty AddrProperty() {
         return items[0];
     }
     

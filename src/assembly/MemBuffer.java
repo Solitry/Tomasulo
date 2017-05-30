@@ -1,5 +1,7 @@
 package assembly;
 
+import java.util.HashMap;
+
 import type.Instruction;
 import type.ResItem;
 
@@ -123,7 +125,7 @@ public class MemBuffer implements ResSta, CDBReceiver, CDBSender {
 		return false;
 	}
 
-	public void log() {
+	public void log(HashMap<String, String[][]> logs) {
 		System.out.println("MemBuffer:");
 		System.out.format("%-7s%-6s%-6s%-16s%-10s%-6s\n", "name", "busy", "time", "Ins", "reg", "addr");
 
@@ -148,5 +150,36 @@ public class MemBuffer implements ResSta, CDBReceiver, CDBSender {
 			System.out.format("%-6s", it.ins != null ? it.ins.src1 : " ");
 			System.out.println("");
 		}
+		
+		String[][] datas = new String[loadBuf.length][6];
+		for(int i = 0; i < loadBuf.length; ++i){
+			ResItem it = loadBuf[i];
+			datas[i][0] = it.name;
+			datas[i][1] = it.busy ? "--" : " ";
+			datas[i][2] = it.restTime > -1 ? String.valueOf(it.restTime) : it.restTime == -1 && it.busy ? "wait" : "";
+			datas[i][3] = it.ins != null ? it.ins.raw : "";
+			datas[i][4] = "";
+			datas[i][5] = it.ins != null ? "F" + it.ins.src1 : "";
+		}
+		logs.put("Load", datas);
+		
+		datas = new String[storeBuf.length][6];
+		for(int i = 0; i < storeBuf.length; ++i){
+			ResItem it = storeBuf[i];
+			datas[i][0] = it.name;
+			datas[i][1] = it.busy ? "--" : " ";
+			datas[i][2] = it.ins != null ? it.ins.raw : "";
+			datas[i][3] = it.restTime > -1 ? String.valueOf(it.restTime) : it.restTime == -1 && it.busy ? "wait" : "";
+			datas[i][4] = it.value[0] != null ? it.value[0].toString() : "";
+			datas[i][5] = it.ins != null ? Integer.toString(it.ins.src1) : "";
+		}
+		logs.put("Store", datas);
+	}
+	
+	public void reset(){
+		for(ResItem i : loadBuf)
+			i.reset();
+		for(ResItem i : storeBuf)
+			i.reset();
 	}
 }

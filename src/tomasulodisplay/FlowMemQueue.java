@@ -5,6 +5,7 @@
  */
 package tomasulodisplay;
 
+import javafx.beans.property.SimpleStringProperty; 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
@@ -15,22 +16,18 @@ import javafx.scene.control.cell.PropertyValueFactory;
  *
  * @author meepo
  */
-
-public class RegQueue extends TableView<Reg> {
-	private final ObservableList<Reg> data = FXCollections.observableArrayList();
+public class FlowMemQueue extends TableView<FlowMem> {
+	private final ObservableList<FlowMem> data = FXCollections.observableArrayList();
 	private int Max_item;
 
-	static private String[] items = new String[] { "Name", "Val"};
+	static private String[] items = new String[] { "Addr", "Val"};
 	private TableColumn[] cols = null;
 
-	public RegQueue(int Max_Item) {
+	public FlowMemQueue() {
 		super();
-		this.Max_item = Max_Item;
 		this.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-		this.setPrefHeight(TomasuloDisplay.allheight / 2);
-
-		for (int i = 0; i < Max_Item; ++i)
-			data.add(new Reg());
+		this.setPrefHeight(TomasuloDisplay.allheight / 5);
+		// this.setPrefWidth(TomasuloDisplay.allwidth/5);
 
 		cols = new TableColumn[items.length];
 		for (int i = 0; i < cols.length; ++i) {
@@ -41,10 +38,13 @@ public class RegQueue extends TableView<Reg> {
 
 		this.setItems(data);
 		this.getColumns().addAll(cols);
+
 	}
 
-	public void setData(String[][] datas){
-		for(int i = 0; i < Max_item; ++i)
+	public void setData(String[][] datas) {
+		for (int i = data.size(); i < datas.length; ++i)
+			data.add(new FlowMem());
+		for (int i = 0; i < data.size(); ++i)
 			data.get(i).setData(datas[i]);
 	}
 }

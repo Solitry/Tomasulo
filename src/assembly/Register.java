@@ -1,5 +1,7 @@
 package assembly;
 
+import java.util.HashMap;
+
 import type.ResItem;
 import type.Value;
 
@@ -38,7 +40,7 @@ public class Register implements CDBReceiver {
 			reg[item.ins.dst].setValue(val);
 	}
 	
-	public void log() {
+	public void log(HashMap<String, String[][]> logs) {
 		System.out.println("Register:");
 
 		System.out.format("%-4s%-10s\n", "id", "value");
@@ -48,5 +50,19 @@ public class Register implements CDBReceiver {
 				System.out.format("%-4d", i);
 				System.out.format("%-10s\n", reg[i].toString());
 			}
+		
+		String[][] datas = new String[REG_NUM][2];
+		for(int i = 0; i < REG_NUM; ++i){
+			datas[i][0] = "F" + i;
+			datas[i][1] = use[i] ? reg[i].toString() : "";
+		}
+		logs.put("Reg", datas);
+	}
+	
+	public void reset(){
+		for(int i = 0; i < REG_NUM; ++i){
+			reg[i].setValue(0);
+			use[i] = false;
+		}
 	}
 }

@@ -1,6 +1,7 @@
 package assembly;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Controller {
 	private InstrQueue iq = null;
@@ -16,6 +17,7 @@ public class Controller {
 	
 	private CDB cdb = null;
 	
+	private int cycle = 0;
 	
 	public Controller() {
 		reg = new Register();
@@ -42,13 +44,27 @@ public class Controller {
 		cdb.addSender(mb);
 	}
 	
-	public void run(int cycle) {
+	public void reset(){
+		cycle = 0;
+		iq.reset();
+		reg.reset();
+		ar.reset();
+		mr.reset();
+		mb.reset();
+		mem.reset();
+	}
+	
+	public void addIns(ArrayList<String> list){
+		iq.addIns(list);
+	}
+	
+	public void run() {
+		++cycle;
 		mem.tick(cycle);
 		adder.tick(cycle);
 		multer.tick(cycle);
 		
 		cdb.listen(cycle);
-		
 		iq.sendIns(cycle);
 		
 		mb.send(cycle);
@@ -56,19 +72,31 @@ public class Controller {
 		mr.send(cycle);
 	}
 	
-	public void log() {
-		iq.log();
+	public boolean isFinish(){
+		return iq.isFinish();
+	}
+	
+	public int getCycle(){
+		return cycle;
+	}
+	
+	public HashMap<String, String[][]> log() {
+		HashMap<String, String[][]> logs = new HashMap<String, String[][]>();
+		System.out.println("Cycle " + cycle);
+		iq.log(logs);
 		System.out.println("");
-		reg.log();
+		reg.log(logs);
 		System.out.println("");
-		ar.log();
+		ar.log(logs);
 		System.out.println("");
-		mr.log();
+		mr.log(logs);
 		System.out.println("");
-		mb.log();
+		mb.log(logs);
 		System.out.println("");
-		mem.log();
+		mem.log(logs);
 		System.out.println("");
+		System.out.println("\n\n\n");
+		return logs;
 	}
 	
 	public static void main(String[] args){
@@ -106,12 +134,11 @@ public class Controller {
 		list.add("ST F4,80");
 		*/
 		Controller con = new Controller();
-		con.iq.addIns(list);
-		for(int i = 1; i <= 100 && !con.iq.isFinish(); ++i){
-			System.out.println("Cycle " + i);
-			con.run(i);
+		con.addIns(list);
+		for(int i = 1; i <= 100 && !con.isFinish(); ++i){
+			con.run();
 			con.log();
-			System.out.println("\n\n\n");
 		}
 	}
 }
+

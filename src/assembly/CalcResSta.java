@@ -1,5 +1,7 @@
 package assembly;
 
+import java.util.HashMap;
+
 import type.Instruction;
 import type.ResItem;
 import type.Value;
@@ -79,7 +81,7 @@ public class CalcResSta implements ResSta, CDBReceiver {
 			}
 	}
 
-	public void log() {
+	public void log(HashMap<String, String[][]> logs) {
 		System.out.println(name + "ResSta:");
 
 		System.out.format("%-6s%-6s%-6s%-16s%-10s%-10s\n", "name", "busy", "time", "Ins", "val1", "val2");
@@ -94,5 +96,22 @@ public class CalcResSta implements ResSta, CDBReceiver {
 			System.out.format("%-10s", it.value[0] != null ? it.value[1].toString() : " ");
 			System.out.println("");
 		}
+		
+		String[][] datas = new String[res.length][6];
+		for(int i = 0; i < res.length; ++i){
+			ResItem it = res[i];
+			datas[i][0] = it.name;
+			datas[i][1] = it.busy ? "--" : " ";
+			datas[i][2] = it.ins != null ? it.ins.raw : "";
+			datas[i][3] = it.restTime > -1 ? String.valueOf(it.restTime) : it.restTime == -1 && it.busy ? "wait" : "";
+			datas[i][4] = it.value[0] != null ? it.value[0].toString() : "";
+			datas[i][5] = it.value[0] != null ? it.value[1].toString() : "";
+		}
+		logs.put(name, datas);
+	}
+	
+	public void reset(){
+		for(ResItem i : res)
+			i.reset();
 	}
 }

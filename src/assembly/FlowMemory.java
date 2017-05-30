@@ -1,6 +1,7 @@
 package assembly;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import type.Instruction;
 import type.ResItem;
@@ -99,7 +100,7 @@ public class FlowMemory implements Executor {
 		return 0.0;
 	}
 
-	public void log() {
+	public void log(HashMap<String, String[][]> logs) {
 		System.out.println("Memory:");
 
 		for (ResItem it : list)
@@ -111,5 +112,17 @@ public class FlowMemory implements Executor {
 			System.out.format("%-6d", storage.get(i).addr);
 			System.out.format("%-10s\n", storage.get(i).value);
 		}
+		
+		String[][] datas = new String[storage.size()][2];
+		for(int i = 0; i < storage.size(); ++i){
+			datas[i][0] = Integer.toString(storage.get(i).addr);
+			datas[i][1] = Double.toString(storage.get(i).value);
+		}
+		logs.put("Mem", datas);
+	}
+	
+	public void reset(){
+		list.clear();
+		storage.clear();
 	}
 }

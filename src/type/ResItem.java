@@ -14,4 +14,16 @@ public class ResItem {
 	public Value loadRelyVal = null; // for LD
 	
 	public int restTime = -1; // for Executor
+	
+	public void reset(){
+		name = null;
+		ins = null;
+		busy = false;
+		in = false;
+		value[0] = null;
+		value[1] = null;
+		bypass = false;
+		loadRelyVal = null;
+		restTime = -1;
+	}
 }

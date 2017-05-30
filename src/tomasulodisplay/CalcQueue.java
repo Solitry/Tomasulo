@@ -26,20 +26,25 @@ public class CalcQueue extends TableView<Calc> {
 
 	public CalcQueue(String AddnameString, int Max_Item) {
 		super();
-		this.Max_item = Max_item;
+		this.Max_item = Max_Item;
 		this.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 		this.setPrefHeight(TomasuloDisplay.allheight / 5);
 
 		for (int i = 0; i < Max_Item; ++i)
-			data.add(new Calc(AddnameString, i));
+			data.add(new Calc());
 
 		cols = new TableColumn[items.length];
 		for (int i = 0; i < cols.length; ++i) {
 			cols[i] = new TableColumn(items[i]);
-			cols[i].setCellValueFactory(new PropertyValueFactory<>(items[i]));
+			cols[i].setCellValueFactory(new PropertyValueFactory(items[i]));
 			cols[i].setSortable(false);
 		}
 		this.setItems(data);
 		this.getColumns().addAll(cols);
+	}
+	
+	public void setData(String[][] datas){
+		for(int i = 0; i < Max_item; ++i)
+			data.get(i).setData(datas[i]);
 	}
 }

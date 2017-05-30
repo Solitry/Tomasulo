@@ -11,39 +11,55 @@ import javafx.beans.property.SimpleStringProperty;
  *
  * @author meepo
  */
-public class Mem {
+public class MemBuf {
 	static int MAXNUM = 6;
 	public SimpleStringProperty[] items = null;
 	
-    public Mem(String name, int id) {
+    public MemBuf() {
     	items = new SimpleStringProperty[MAXNUM];
     	for(int i = 0; i < MAXNUM; ++i)
     		items[i] = new SimpleStringProperty("");
-    	
-        items[0] = new SimpleStringProperty(name + id);
-        items[1] = new SimpleStringProperty("no");
     }
     
-    //　一定要有get方法
     public String getName() {
         return items[0].get();
+    }
+    
+    public SimpleStringProperty NameProperty() {
+        return items[0];
     }
     
     public String getBusy() {
         return items[1].get();
     }
     
+    public SimpleStringProperty BusyProperty() {
+        return items[1];
+    }
+    
     public String getIns() {
         return items[2].get();
     }   
+    
+    public SimpleStringProperty InsProperty() {
+        return items[2];
+    }
     
     public String getTime() {
         return items[3].get();
     }
     
+    public SimpleStringProperty TimeProperty() {
+        return items[3];
+    }
+    
     public String getReg() {
         return items[4].get();
     }  
+    
+    public SimpleStringProperty RegProperty() {
+        return items[5];
+    }
     
     public String getAddr() {
         return items[5].get();

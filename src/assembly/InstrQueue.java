@@ -1,6 +1,7 @@
 package assembly;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import type.Instruction;
 
@@ -104,7 +105,7 @@ public class InstrQueue {
 		return true;
 	}
 	
-	public void log() {
+	public void log(HashMap<String, String[][]> logs) {
 		System.out.print("InstrQueue:");
 		if (empty()) {
 			System.out.println(" empty");
@@ -122,5 +123,15 @@ public class InstrQueue {
 					System.out.print("    ");
 			System.out.println("");
 		}
+		
+		String[][] datas = new String[insList.size()][6];
+		for(int i = 0; i < insList.size(); ++i){
+			datas[i][0] = i == pos ? "->" : "";
+			datas[i][1] = strList.get(i);
+			for (int j = 0; j < Instruction.STAGE_NUM; ++j)
+				datas[i][j + 2] = insList.get(i).finishTime[j] != -1 ? Integer.toString(insList.get(i).finishTime[j]) : "";
+		}
+		logs.put("Inst", datas);
 	}
 }
+
