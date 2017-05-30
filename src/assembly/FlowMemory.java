@@ -6,14 +6,13 @@ import type.Instruction;
 import type.ResItem;
 import type.MemUnit;
 
-
 public class FlowMemory implements Executor {
 	public final static int MEM_TIME = 2;
-	
+
 	private ArrayList<ResItem> list = new ArrayList<ResItem>();
-	
+
 	private ArrayList<MemUnit> storage = new ArrayList<MemUnit>();
-	
+
 	@Override
 	public void get(ResItem item) {
 		list.add(item);
@@ -29,7 +28,7 @@ public class FlowMemory implements Executor {
 	public void tick(int cycle) {
 		int start = 1;
 		boolean visitMem = false;
-		
+
 		if (list.size() > 0) {
 			ResItem it = list.get(0);
 			if (it.restTime >= 0) {
@@ -47,11 +46,11 @@ public class FlowMemory implements Executor {
 				}
 			}
 		}
-		
+
 		for (int i = start; i < list.size(); ++i) {
-			int pre = i == 0? -2 : list.get(i - 1).restTime;
+			int pre = i == 0 ? -2 : list.get(i - 1).restTime;
 			if (list.get(i).restTime - pre > 1) {
-				if (list.get(i).restTime == 1 && list.get(i).ins.opLabel == Instruction.INSTR_LD_ID)
+				if (visitMem && list.get(i).restTime == 1 && list.get(i).ins.opLabel == Instruction.INSTR_LD_ID)
 					continue;
 				--list.get(i).restTime;
 				if (list.get(i).restTime == 0)
@@ -64,12 +63,12 @@ public class FlowMemory implements Executor {
 	public boolean write(CDB cdb, int cycle) {
 		if (list.size() == 0)
 			return false;
-		
+
 		ResItem last = list.get(0);
-		
+
 		if (last.restTime < 0) {
-			assert(last.ins.opLabel == Instruction.INSTR_LD_ID);
-			
+			assert (last.ins.opLabel == Instruction.INSTR_LD_ID);
+
 			double val = load(last.ins.src1);
 			cdb.receive(last, val);
 			last.ins.finish(Instruction.WB, cycle);
@@ -78,7 +77,7 @@ public class FlowMemory implements Executor {
 		}
 		return false;
 	}
-	
+
 	private void store(int addr, double val) {
 		int change = -1;
 		for (int i = 0; i < storage.size(); ++i)
@@ -87,25 +86,25 @@ public class FlowMemory implements Executor {
 				change = i;
 				break;
 			}
-		
+
 		if (change == -1) {
 			storage.add(new MemUnit(addr, val));
 		}
 	}
-	
+
 	private double load(int addr) {
 		for (MemUnit unit : storage)
 			if (unit.addr == addr)
 				return unit.value;
 		return 0.0;
 	}
-	
+
 	public void log() {
 		System.out.println("Memory:");
-		
+
 		for (ResItem it : list)
 			System.out.println(it.ins.raw + " " + it.restTime);
-		
+
 		System.out.format("%-6s%-10s\n", "addr", "value");
 
 		for (int i = 0; i < storage.size(); ++i) {

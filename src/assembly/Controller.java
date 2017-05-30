@@ -90,13 +90,21 @@ public class Controller {
 		list.add("ADDD F6,F8,F2");
 		*/
 		
-		list.add("LD F0,80");
-		list.add("MULD F4,F0,F2");
-		list.add("ST F4,80");
-		list.add("LD F0,80");
-		list.add("MULD F4,F0,F2");
-		list.add("ST F4,80");
+		list.add("LD F6,34");
+		list.add("LD F2,45");
+		list.add("MULD F0,F2,F4");
+		list.add("SUBD F8,F6,F2");
+		list.add("DIVD F10,F0,F6");
+		list.add("ADDD F6,F8,F2");
 		
+		/*
+		list.add("LD F0,80");
+		list.add("MULD F4,F0,F2");
+		list.add("ST F4,80");
+		list.add("LD F0,80");
+		list.add("MULD F4,F0,F2");
+		list.add("ST F4,80");
+		*/
 		Controller con = new Controller();
 		con.iq.addIns(list);
 		for(int i = 1; i <= 100 && !con.iq.isFinish(); ++i){
