@@ -16,20 +16,20 @@ import javafx.scene.control.cell.PropertyValueFactory;
  * @author meepo
  */
 
-public class LoadQueue extends TableView<Load> {
-    private final ObservableList<Load> data =  
+public class StoreQueue extends TableView<Store> {
+    private final ObservableList<Store> data =  
         FXCollections.observableArrayList(  
              );  
     private int Max_item;
     private int pc = 0;
-    public LoadQueue(int Max_Item) {
+    public StoreQueue(int Max_Item) {
         super();
         this.Max_item = Max_item;
         this.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         this.setPrefHeight(TomasuloDisplay.allheight/5);
 
         for (int i = 0; i < Max_Item; ++ i) {
-            data.add(new Load(i));
+            data.add(new Store(i));
         }
         
         TableColumn Id = new TableColumn("Id");  

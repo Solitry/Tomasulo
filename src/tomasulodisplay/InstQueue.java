@@ -23,38 +23,48 @@ public class InstQueue extends TableView<Inst> {
     private int pc = 0;
     public InstQueue(int Max_Item) {
         super();
+        this.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        this.setPrefHeight(TomasuloDisplay.allheight/5);
+        
+        //this.setPrefWidth(TomasuloDisplay.allwidth/5);
+
         this.Max_item = Max_item;   
         for (int i = 0; i < Max_Item; ++ i) {
             data.add(new Inst());
         }
         TableColumn Select = new TableColumn("");  
-        Select.setMinWidth(5);  
+        Select.setSortable(false);
+        //elect.setMinWidth(5);  
         Select.setCellValueFactory(  
                 new PropertyValueFactory<>("Select"));  
         this.setEditable(true);
         
         TableColumn Name = new TableColumn("Name");  
-        Name.setMinWidth(50);  
+        //Name.setMinWidth(50);  
         Name.setCellValueFactory(  
                 new PropertyValueFactory<>("Name"));  
-        TableColumn Desti = new TableColumn("Desti");  
-        Desti.setMinWidth(50);  
-        Desti.setCellValueFactory(  
-                new PropertyValueFactory<>("Desti")); 
-        TableColumn Sourcej = new TableColumn("Sourcej");  
-        Sourcej.setMinWidth(50);  
-        Sourcej.setCellValueFactory(  
-                new PropertyValueFactory<>("Sourcej")); 
+        TableColumn Id = new TableColumn("ID");  
+        //Id.setMinWidth(50);  
+        Id.setCellValueFactory(  
+                new PropertyValueFactory<>("Id")); 
+        Id.setSortable(false);
+
+        TableColumn Ex = new TableColumn("EX");  
+        //Ex.setMinWidth(50);  
+        Ex.setCellValueFactory(  
+                new PropertyValueFactory<>("Ex")); 
+        Ex.setSortable(false);
         
-        TableColumn Sourcek = new TableColumn("Sourcek");  
-        Sourcek.setMinWidth(50);  
-        Sourcek.setCellValueFactory(  
-                new PropertyValueFactory<>("Sourcek")); 
+        TableColumn Wb = new TableColumn("WB");  
+        //Wb.setMinWidth(50);  
+        Wb.setCellValueFactory(  
+                new PropertyValueFactory<>("Wb")); 
+        Wb.setSortable(false);
         
         Name.setCellFactory(TextFieldTableCell.<Inst>forTableColumn()); 
-        Desti.setCellFactory(TextFieldTableCell.<Inst>forTableColumn()); 
-        Sourcej.setCellFactory(TextFieldTableCell.<Inst>forTableColumn());  
-        Sourcek.setCellFactory(TextFieldTableCell.<Inst>forTableColumn());  
+        Id.setCellFactory(TextFieldTableCell.<Inst>forTableColumn()); 
+        Ex.setCellFactory(TextFieldTableCell.<Inst>forTableColumn());  
+        Wb.setCellFactory(TextFieldTableCell.<Inst>forTableColumn());  
         Name.setEditable(true);
         Name.setOnEditCommit(  
            new EventHandler<TableColumn.CellEditEvent<Inst, String> >() {
@@ -64,28 +74,28 @@ public class InstQueue extends TableView<Inst> {
             }
         }); 
         
-        Desti.setEditable(true);
-        Desti.setOnEditCommit(  
+        Id.setEditable(true);
+        Id.setOnEditCommit(  
            new EventHandler<TableColumn.CellEditEvent<Inst, String> >() {
             @Override
             public void handle(TableColumn.CellEditEvent<Inst, String> t) {
-                t.getRowValue().setDesti(t.getNewValue());
+                t.getRowValue().setId(t.getNewValue());
             }
         }); 
-        Sourcej.setEditable(true);
-        Sourcej.setOnEditCommit(  
+        Ex.setEditable(true);
+        Ex.setOnEditCommit(  
            new EventHandler<TableColumn.CellEditEvent<Inst, String> >() {
             @Override
             public void handle(TableColumn.CellEditEvent<Inst, String> t) {
-                t.getRowValue().setSourcej(t.getNewValue());
+                t.getRowValue().setEx(t.getNewValue());
             }
         }); 
-        Sourcek.setEditable(true);
-        Sourcek.setOnEditCommit(  
+        Wb.setEditable(true);
+        Wb.setOnEditCommit(  
            new EventHandler<TableColumn.CellEditEvent<Inst, String> >() {
             @Override
             public void handle(TableColumn.CellEditEvent<Inst, String> t) {
-                t.getRowValue().setSourcek(t.getNewValue());
+                t.getRowValue().setWb(t.getNewValue());
             }
         });  
    
@@ -94,7 +104,7 @@ public class InstQueue extends TableView<Inst> {
         this.setItems(data);  
         data.get(pc).SetSelect("->");
 
-        this.getColumns().addAll(Select, Name, Desti, Sourcej, Sourcek);
+        this.getColumns().addAll(Select, Name, Id, Ex, Wb);
 
         
     }

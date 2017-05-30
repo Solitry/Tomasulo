@@ -16,20 +16,21 @@ import javafx.scene.control.cell.PropertyValueFactory;
  * @author meepo
  */
 
-public class LoadQueue extends TableView<Load> {
-    private final ObservableList<Load> data =  
+public class AddQueue extends TableView<Add> {
+    private final ObservableList<Add> data =  
         FXCollections.observableArrayList(  
              );  
     private int Max_item;
     private int pc = 0;
-    public LoadQueue(int Max_Item) {
+    public AddQueue(String AddnameString, int Max_Item) {
         super();
         this.Max_item = Max_item;
         this.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         this.setPrefHeight(TomasuloDisplay.allheight/5);
 
         for (int i = 0; i < Max_Item; ++ i) {
-            data.add(new Load(i));
+            
+            data.add(new Add(AddnameString, i));
         }
         
         TableColumn Id = new TableColumn("Id");  
@@ -49,13 +50,21 @@ public class LoadQueue extends TableView<Load> {
                 new PropertyValueFactory<>("Address")); 
         Address.setSortable(false);
         TableColumn Cache = new TableColumn("Cache");  
-        //Cache.setMinWidth(50);  
         Cache.setCellValueFactory(  
                 new PropertyValueFactory<>("Cache")); 
         Cache.setSortable(false);
-      
+
+        TableColumn Value5 = new TableColumn("Value5");  
+        Cache.setCellValueFactory(  
+                new PropertyValueFactory<>("Value5")); 
+        Cache.setSortable(false);
+        
+        TableColumn Value6 = new TableColumn("Value6");  
+        Cache.setCellValueFactory(  
+                new PropertyValueFactory<>("Value6")); 
+        Cache.setSortable(false);
         this.setItems(data);  
-        this.getColumns().addAll(Id, Busy, Address, Cache);
+        this.getColumns().addAll(Id, Busy, Address, Cache,Value5,Value6);
 
         
     }
