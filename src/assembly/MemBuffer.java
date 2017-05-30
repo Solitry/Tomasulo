@@ -32,7 +32,7 @@ public class MemBuffer implements ResSta, CDBReceiver, CDBSender {
 	public void getIns(Instruction ins) {
 		ResItem it = null;
 		if (ins.opLabel == Instruction.INSTR_LD_ID) { // load
-			for (ResItem x: loadBuf)
+			for (ResItem x : loadBuf)
 				if (!x.busy) {
 					it = x;
 					break;
@@ -40,12 +40,12 @@ public class MemBuffer implements ResSta, CDBReceiver, CDBSender {
 			it.ins = ins;
 			it.busy = true;
 			it.in = false;
-			it.restTime = -1;
+			it.restTime = -2;
 			it.value[0] = null;
 			it.value[1] = null;
 			reg.setValue(ins.dst, it.name);
 		} else { // store
-			for (ResItem x: storeBuf)
+			for (ResItem x : storeBuf)
 				if (!x.busy) {
 					it = x;
 					break;
@@ -53,34 +53,35 @@ public class MemBuffer implements ResSta, CDBReceiver, CDBSender {
 			it.ins = ins;
 			it.busy = true;
 			it.in = false;
-			it.restTime = -1;
+			it.restTime = -2;
 			it.value[0] = reg.getValue(ins.src0);
 			it.value[1] = null;
 		}
 	}
-	
+
 	private boolean beHead(ResItem x) {
-		/* use FIFO on the queue of same-address ResItem
-		 * to use FIFO on all LD/ST instructions, use label only
+		/*
+		 * use FIFO on the queue of same-address ResItem to use FIFO on all
+		 * LD/ST instructions, use label only
 		 */
-		if(!x.busy)
+		if (!x.busy)
 			return false;
-		
+
 		int addr = x.ins.src1;
 		int label = x.ins.insLabel;
-		for (ResItem it: loadBuf)
+		for (ResItem it : loadBuf)
 			if (it.busy && !it.in && it.ins.src1 == addr && it.ins.insLabel < label)
 				return false;
-		for (ResItem it: storeBuf)
+		for (ResItem it : storeBuf)
 			if (it.busy && !it.in && it.ins.src1 == addr && it.ins.insLabel < label)
 				return false;
 		return true;
 	}
-	
+
 	@Override
 	public void send(int cycle) {
 		ResItem ret = null;
-		if (!mem.full()) {	
+		if (!mem.full()) {
 			for (int i = 0; i < ST_BUF_SIZE && ret == null; ++i)
 				if (beHead(storeBuf[i]) && storeBuf[i].value[0].ready() && !storeBuf[i].in)
 					ret = storeBuf[i];
@@ -121,7 +122,7 @@ public class MemBuffer implements ResSta, CDBReceiver, CDBSender {
 		// TODO bypass of load instruction
 		return false;
 	}
-	
+
 	public void log() {
 		System.out.println("MemBuffer:");
 		System.out.format("%-7s%-6s%-6s%-16s%-10s%-6s\n", "name", "busy", "time", "Ins", "reg", "addr");
@@ -129,17 +130,19 @@ public class MemBuffer implements ResSta, CDBReceiver, CDBSender {
 		for (ResItem it : loadBuf) {
 			System.out.format("%-7s", it.name);
 			System.out.format("%-6s", it.busy ? " --" : " ");
-			System.out.format("%-6s", it.restTime > -1 ? String.valueOf(it.restTime) : " ");
+			System.out.format("%-6s",
+					it.restTime > -1 ? String.valueOf(it.restTime) : it.restTime == -1 && it.busy ? "wait" : " ");
 			System.out.format("%-16s", it.ins != null ? it.ins.raw : " ");
 			System.out.format("%-10s", " ");
 			System.out.format("%-6s", it.ins != null ? it.ins.src1 : " ");
 			System.out.println("");
 		}
-		
+
 		for (ResItem it : storeBuf) {
 			System.out.format("%-7s", it.name);
 			System.out.format("%-6s", it.busy ? " --" : " ");
-			System.out.format("%-6s", it.restTime > -1 ? String.valueOf(it.restTime) : " ");
+			System.out.format("%-6s",
+					it.restTime > -1 ? String.valueOf(it.restTime) : it.restTime == -1 && it.busy ? "wait" : " ");
 			System.out.format("%-16s", it.ins != null ? it.ins.raw : " ");
 			System.out.format("%-10s", it.value[0] != null ? it.value[0].toString() : " ");
 			System.out.format("%-6s", it.ins != null ? it.ins.src1 : " ");

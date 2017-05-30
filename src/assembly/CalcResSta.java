@@ -60,7 +60,7 @@ public class CalcResSta implements ResSta, CDBReceiver {
 		for (ResItem x : res)
 			if (!x.busy) {
 				x.busy = true;
-				x.restTime = -1;
+				x.restTime = -2;
 				x.ins = ins;
 				x.value[0] = reg.getValue(ins.src0);
 				x.value[1] = reg.getValue(ins.src1);
@@ -87,7 +87,8 @@ public class CalcResSta implements ResSta, CDBReceiver {
 		for (ResItem it : res) {
 			System.out.format("%-6s", it.name);
 			System.out.format("%-6s", it.busy ? " --" : " ");
-			System.out.format("%-6s", it.restTime > -1 ? String.valueOf(it.restTime) : " ");
+			System.out.format("%-6s",
+					it.restTime > -1 ? String.valueOf(it.restTime) : it.restTime == -1 && it.busy ? "wait" : " ");
 			System.out.format("%-16s", it.ins != null ? it.ins.raw : " ");
 			System.out.format("%-10s", it.value[0] != null ? it.value[0].toString() : " ");
 			System.out.format("%-10s", it.value[0] != null ? it.value[1].toString() : " ");
