@@ -73,6 +73,7 @@ public class Controller {
 	
 	public static void main(String[] args){
 		ArrayList<String> list = new ArrayList<String>();
+		list.add("LD F2,0");
 		list.add("DIVD F0,F2,F4");
 		list.add("ADDD F6,F0,F8");
 		list.add("ST F6,0");
