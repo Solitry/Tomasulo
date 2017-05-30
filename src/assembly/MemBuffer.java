@@ -120,10 +120,10 @@ public class MemBuffer implements ResSta, CDBReceiver, CDBSender {
 	public void log() {
 		System.out.println("MemBuffer:");
 
-		System.out.format("%-6s%-6s%-6s%-16s%-10s%-6s\n", "name", "busy", "time", "Ins", "reg", "addr");
+		System.out.format("%-7s%-6s%-6s%-16s%-10s%-6s\n", "name", "busy", "time", "Ins", "reg", "addr");
 
 		for (ResItem it : loadBuf) {
-			System.out.format("%-6s", it.name);
+			System.out.format("%-7s", it.name);
 			System.out.format("%-6s", it.busy ? " --" : " ");
 			System.out.format("%-6s", it.restTime > -1 ? String.valueOf(it.restTime) : " ");
 			System.out.format("%-16s", it.ins != null ? it.ins.raw : " ");
@@ -133,7 +133,7 @@ public class MemBuffer implements ResSta, CDBReceiver, CDBSender {
 		}
 		
 		for (ResItem it : storeBuf) {
-			System.out.format("%-6s", it.name);
+			System.out.format("%-7s", it.name);
 			System.out.format("%-6s", it.busy ? " --" : " ");
 			System.out.format("%-6s", it.restTime > -1 ? String.valueOf(it.restTime) : " ");
 			System.out.format("%-16s", it.ins != null ? it.ins.raw : " ");
