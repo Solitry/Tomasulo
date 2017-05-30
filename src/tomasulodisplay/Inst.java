@@ -12,15 +12,15 @@ import javafx.beans.property.SimpleStringProperty;
 public class Inst {
     public SimpleStringProperty Select;
     public SimpleStringProperty Name;  
-    public SimpleStringProperty Desti;  
-    public SimpleStringProperty Sourcej;
-    public SimpleStringProperty Sourcek;
+    public SimpleStringProperty Id;  
+    public SimpleStringProperty Ex;
+    public SimpleStringProperty Wb;
     public Inst() {
         Select = new SimpleStringProperty("");
         Name = new SimpleStringProperty("1");
-        Desti = new SimpleStringProperty("2");
-        Sourcej = new SimpleStringProperty("3");
-        Sourcek = new SimpleStringProperty("4");
+        Id = new SimpleStringProperty("2");
+        Ex = new SimpleStringProperty("3");
+        Wb = new SimpleStringProperty("4");
         
     }
     
@@ -34,32 +34,32 @@ public class Inst {
         return Name.get();
     }
     
-    public String getDesti() {
-        return Desti.get();
+    public String getId() {
+        return Id.get();
     }   
     
-    public String getSourcej() {
-        return Sourcej.get();
+    public String getEx() {
+        return Ex.get();
     }
     
-    public String getSourcek() {
-        return Sourcek.get();
+    public String getWb() {
+        return Wb.get();
     }
     
     public void setName(String fName) {
         Name.set(fName);
     }
     
-    public void setDesti(String fDesti) {
-        Desti.set(fDesti);
+    public void setId(String fId) {
+        Id.set(fId);
     }
     
-    public void setSourcej(String fSourcej) {
-        Sourcej.set(fSourcej);
+    public void setEx(String fEx) {
+        Ex.set(fEx);
     }
     
-    public void setSourcek(String fSourcek) {
-        Sourcek.set(fSourcek);
+    public void setWb(String fWb) {
+        Wb.set(fWb);
     }
     
     public void SetSelect(String fSelect) {
