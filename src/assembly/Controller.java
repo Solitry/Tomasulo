@@ -56,6 +56,19 @@ public class Controller {
 		mr.send(cycle);
 	}
 	
+	public void log() {
+		iq.log();
+		System.out.println("");
+		reg.log();
+		System.out.println("");
+		ar.log();
+		System.out.println("");
+		mr.log();
+		System.out.println("");
+		mb.log();
+		System.out.println("");
+	}
+	
 	public static void main(String[] args){
 		ArrayList<String> list = new ArrayList<String>();
 		list.add("DIVD F0,F2,F4");
@@ -66,9 +79,11 @@ public class Controller {
 		
 		Controller con = new Controller();
 		con.iq.addIns(list);
-		for(int i = 0; i < 200 && !con.iq.isFinish(); ++i){
-			System.err.println("Tick " + i);
+		for(int i = 1; i <= 10 && !con.iq.isFinish(); ++i){
+			System.out.println("Cycle " + i);
 			con.run(i);
+			con.log();
+			System.out.println("\n\n\n");
 		}
 	}
 }

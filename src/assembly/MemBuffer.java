@@ -20,11 +20,11 @@ public class MemBuffer implements ResSta, CDBReceiver, CDBSender {
 
 		for (int i = 0; i < LD_BUF_SIZE; ++i) {
 			loadBuf[i] = new ResItem();
-			loadBuf[i].name = LD + i;
+			loadBuf[i].name = LD + (i + 1);
 		}
 		for (int i = 0; i < ST_BUF_SIZE; ++i) {
 			storeBuf[i] = new ResItem();
-			storeBuf[i].name = ST + i;
+			storeBuf[i].name = ST + (i + 1);
 		}
 	}
 
@@ -39,6 +39,7 @@ public class MemBuffer implements ResSta, CDBReceiver, CDBSender {
 				}
 			it.ins = ins;
 			it.busy = true;
+			it.restTime = -1;
 			it.value[0] = null;
 			it.value[1] = null;
 			reg.setValue(ins.dst, it.name);
@@ -50,6 +51,7 @@ public class MemBuffer implements ResSta, CDBReceiver, CDBSender {
 				}
 			it.ins = ins;
 			it.busy = true;
+			it.restTime = -1;
 			it.value[0] = reg.getValue(ins.src0);
 			it.value[1] = null;
 		}
@@ -113,5 +115,31 @@ public class MemBuffer implements ResSta, CDBReceiver, CDBSender {
 	public boolean write(CDB cdb, int cycle) {
 		// TODO bypass of load instruction
 		return false;
+	}
+	
+	public void log() {
+		System.out.println("MemBuffer:");
+
+		System.out.format("%-6s%-6s%-6s%-16s%-10s%-6s\n", "name", "busy", "time", "Ins", "reg", "addr");
+
+		for (ResItem it : loadBuf) {
+			System.out.format("%-6s", it.name);
+			System.out.format("%-6s", it.busy ? " --" : " ");
+			System.out.format("%-6s", it.restTime > -1 ? String.valueOf(it.restTime) : " ");
+			System.out.format("%-16s", it.ins != null ? it.ins.raw : " ");
+			System.out.format("%-10s", " ");
+			System.out.format("%-6s", it.ins != null ? it.ins.src1 : " ");
+			System.out.println("");
+		}
+		
+		for (ResItem it : storeBuf) {
+			System.out.format("%-6s", it.name);
+			System.out.format("%-6s", it.busy ? " --" : " ");
+			System.out.format("%-6s", it.restTime > -1 ? String.valueOf(it.restTime) : " ");
+			System.out.format("%-16s", it.ins != null ? it.ins.raw : " ");
+			System.out.format("%-10s", it.value[0] != null ? it.value[0].toString() : " ");
+			System.out.format("%-6s", it.ins != null ? it.ins.src1 : " ");
+			System.out.println("");
+		}
 	}
 }

@@ -30,7 +30,7 @@ public class CalcResSta implements ResSta, CDBReceiver {
 		res = new ResItem[resSize];
 		for (int i = 0; i < resSize; ++i) {
 			res[i] = new ResItem();
-			res[i].name = name + i;
+			res[i].name = name + (i + 1);
 		}
 	}
 
@@ -38,7 +38,7 @@ public class CalcResSta implements ResSta, CDBReceiver {
 	public void receive(ResItem item, double val) {
 		// GJH: Auto-generated method stub
 		for (ResItem x : res)
-			if(x.busy)
+			if (x.busy)
 				for (Value y : x.value)
 					if (y.wait(item.name))
 						y.setValue(val);
@@ -56,10 +56,11 @@ public class CalcResSta implements ResSta, CDBReceiver {
 	@Override
 	public void getIns(Instruction ins) {
 		// GJH: Auto-generated method stub
-		System.err.println("GetIns " + ins.insLabel);
+		// System.err.println("GetIns " + ins.insLabel);
 		for (ResItem x : res)
 			if (!x.busy) {
 				x.busy = true;
+				x.restTime = -1;
 				x.ins = ins;
 				x.value[0] = reg.getValue(ins.src0);
 				x.value[1] = reg.getValue(ins.src1);
@@ -74,5 +75,21 @@ public class CalcResSta implements ResSta, CDBReceiver {
 		for (int i = 0; i < resSize && !exe.full(); ++i)
 			if (res[i].busy && res[i].value[0].ready() && res[i].value[1].ready())
 				exe.get(res[i]);
+	}
+
+	public void log() {
+		System.out.println(name + "ResSta:");
+
+		System.out.format("%-6s%-6s%-6s%-16s%-10s%-10s\n", "name", "busy", "time", "Ins", "val1", "val2");
+
+		for (ResItem it : res) {
+			System.out.format("%-6s", it.name);
+			System.out.format("%-6s", it.busy ? " --" : " ");
+			System.out.format("%-6s", it.restTime > -1 ? String.valueOf(it.restTime) : " ");
+			System.out.format("%-16s", it.ins != null ? it.ins.raw : " ");
+			System.out.format("%-10s", it.value[0] != null ? it.value[0].toString() : " ");
+			System.out.format("%-10s", it.value[0] != null ? it.value[1].toString() : " ");
+			System.out.println("");
+		}
 	}
 }

@@ -35,7 +35,7 @@ public class InstrQueue {
 			return;
 		
 		Instruction i = insList.get(pos);
-		System.err.println("SendIns " + i.opLabel);
+		//System.err.println("SendIns " + i.opLabel);
 		switch(i.opLabel){
 		case Instruction.INSTR_ADD_ID:
 		case Instruction.INSTR_SUB_ID:
@@ -98,9 +98,29 @@ public class InstrQueue {
 	public boolean isFinish(){
 		for(Instruction i : insList)
 			if(!i.isFinish()){
-				System.err.println("Unfinish " + i.insLabel);
+				//System.err.println("Unfinish " + i.insLabel);
 				return false;
 			}
 		return true;
+	}
+	
+	public void log() {
+		System.out.print("InstrQueue:");
+		if (empty()) {
+			System.out.println(" empty");
+		} else
+			System.out.println("");
+		
+		System.out.format("%-3s%-16s%-4s%-4s%-4s\n", "St", "Ins", "ID", "EX", "WB");
+		for (int i = 0; i < insList.size(); ++i) {
+			System.out.print(i == pos? " * " : "   ");
+			System.out.format("%-16s", strList.get(i));
+			for (int j = 0; j < Instruction.STAGE_NUM; ++j)
+				if (insList.get(i).finishTime[j] != -1)
+					System.out.format("%-4d", insList.get(i).finishTime[j]);
+				else
+					System.out.print("    ");
+			System.out.println("");
+		}
 	}
 }

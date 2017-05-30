@@ -22,6 +22,8 @@ public class Instruction {
 
 	public int insLabel = -1;
 	
+	public String raw = null;
+	
 	/*
 	 * for normal instructions:
 	 *   src0, src1	: the source-register's label
@@ -44,13 +46,13 @@ public class Instruction {
 	public int[] finishTime = new int[STAGE_NUM]; // -1 means no value
 
 	public void finish(int stage, int cycle) {
-		System.err.println("ins " + insLabel + " stage " + stage + " finish");
+		//System.err.println("ins " + insLabel + " stage " + stage + " finish");
 		finishTime[stage] = cycle;
 	}
 
 	public Instruction(String str, int count) {
 		// GJH: translate str into instruction-type
-		System.err.println(str + " " + count);
+		//System.err.println(str + " " + count);
 		int p0 = str.indexOf(' ');
 		opName = str.substring(0, p0);
 		for (int i = 0; i < 6; ++i)
@@ -75,6 +77,7 @@ public class Instruction {
 		
 		for (int i = 0; i < STAGE_NUM; ++i)
 			finishTime[i] = -1;
+		raw = str;
 	}
 
 	public boolean isFinish(){

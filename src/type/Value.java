@@ -6,7 +6,7 @@ public class Value {
 	
 	public Value(String _Q) {
 		Q = _Q;
-		V = -1;
+		V = 0;
 	}
 	
 	public Value(double _V) {
@@ -16,7 +16,7 @@ public class Value {
 	
 	public void setValue(String _Q) {
 		Q = _Q;
-		V = -1;
+		V = 0;
 	}
 	
 	public void setValue(double _V) {
@@ -30,5 +30,12 @@ public class Value {
 	
 	public boolean wait(String name) {
 		return !ready() && Q.equals(name);
+	}
+	
+	public String toString() {
+		if (Q != null)
+			return Q;
+		else
+			return String.format("%-8f", V);
 	}
 }
