@@ -79,7 +79,7 @@ public class Controller {
 		
 		Controller con = new Controller();
 		con.iq.addIns(list);
-		for(int i = 1; i <= 10 && !con.iq.isFinish(); ++i){
+		for(int i = 1; i <= 100 && !con.iq.isFinish(); ++i){
 			System.out.println("Cycle " + i);
 			con.run(i);
 			con.log();
