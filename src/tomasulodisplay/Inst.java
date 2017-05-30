@@ -10,60 +10,43 @@ import javafx.beans.property.SimpleStringProperty;
  * @author meepo
  */
 public class Inst {
-    public SimpleStringProperty Select;
-    public SimpleStringProperty Name;  
-    public SimpleStringProperty Id;  
-    public SimpleStringProperty Ex;
-    public SimpleStringProperty Wb;
+	static int MAXNUM = 6;
+	public SimpleStringProperty[] items = null;
+	
     public Inst() {
-        Select = new SimpleStringProperty("");
-        Name = new SimpleStringProperty("1");
-        Id = new SimpleStringProperty("2");
-        Ex = new SimpleStringProperty("3");
-        Wb = new SimpleStringProperty("4");
-        
-    }
-    
-     public String getSelect() {
-        return Select.get();
+    	items = new SimpleStringProperty[MAXNUM];
+    	for(int i = 0; i < MAXNUM; ++i)
+    		items[i] = new SimpleStringProperty("");
     }
     
      
     //　一定要有get方法
-    public String getName() {
-        return Name.get();
+    public String getSt() {
+        return items[0].get();
     }
     
-    public String getId() {
-        return Id.get();
+    public String getIns() {
+        return items[1].get();
+    }
+    
+    public String getID() {
+        return items[2].get();
     }   
     
-    public String getEx() {
-        return Ex.get();
+    public String getEX() {
+        return items[3].get();
     }
     
-    public String getWb() {
-        return Wb.get();
+    public String getMEM() {
+        return items[4].get();
     }
     
-    public void setName(String fName) {
-        Name.set(fName);
+    public String getWB() {
+        return items[5].get();
     }
     
-    public void setId(String fId) {
-        Id.set(fId);
+    public void setValue(String[] data) {
+    	for(int i = 0; i < MAXNUM; ++i)
+    		items[i].set(data[i]);
     }
-    
-    public void setEx(String fEx) {
-        Ex.set(fEx);
-    }
-    
-    public void setWb(String fWb) {
-        Wb.set(fWb);
-    }
-    
-    public void SetSelect(String fSelect) {
-        Select.set(fSelect);
-    }
-
 }
