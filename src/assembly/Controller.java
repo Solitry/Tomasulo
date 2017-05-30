@@ -67,6 +67,8 @@ public class Controller {
 		System.out.println("");
 		mb.log();
 		System.out.println("");
+		mem.log();
+		System.out.println("");
 	}
 	
 	public static void main(String[] args){

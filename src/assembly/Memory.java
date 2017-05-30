@@ -82,4 +82,15 @@ public class Memory implements Executor {
 				return unit.value;
 		return 0.0;
 	}
+	
+	public void log() {
+		System.out.println("Memory:");
+
+		System.out.format("%-6s%-10s\n", "addr", "value");
+
+		for (int i = 0; i < storage.size(); ++i) {
+			System.out.format("%-6d", storage.get(i).addr);
+			System.out.format("%-10s\n", storage.get(i).value);
+		}
+	}
 }
