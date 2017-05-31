@@ -32,7 +32,17 @@ public class Register implements CDBReceiver {
 		reg[num].setValue(name);
 		use[num] = true;
 	}
-
+	
+	public void userSetValue(int num, double val) {
+		reg[num].setValue(val);
+		use[num] = true;
+	}
+	
+	public void userSetValue(int num, String name) {
+		reg[num].setValue(name);
+		use[num] = true;
+	}
+	
 	@Override
 	public void receive(ResItem item, double val) {
 		// GJH: update value

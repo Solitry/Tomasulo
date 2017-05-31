@@ -79,7 +79,7 @@ public class FlowMemory implements Executor {
 		return false;
 	}
 
-	private void store(int addr, double val) {
+	public void store(int addr, double val) {
 		int change = -1;
 		for (int i = 0; i < storage.size(); ++i)
 			if (storage.get(i).addr == addr) {
