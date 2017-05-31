@@ -24,6 +24,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -33,13 +34,16 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-
 /**
  *
  * @author meepo
  */
 
 public class TomasuloDisplay extends Application {
+	static String ButtonStyle = "-fx-text-fill: white; " + "-fx-font: 15 arial;"
+			+ "-fx-font-weight: bold;-fx-background-color: linear-gradient(#61a2b1, #2A5058);"
+			+ "-fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );";
+	
 	// 须在start函数最后把部件加到显示区域
 	public InstQueue instqueue = new InstQueue();
 	public MemBufQueue loadqueue = new MemBufQueue("Load", 3);
@@ -47,7 +51,7 @@ public class TomasuloDisplay extends Application {
 	public RegQueue regqueue = new RegQueue(10);
 	public CalcQueue addqueue = new CalcQueue("Add", 3);
 	public CalcQueue mulqueue = new CalcQueue("Mul", 2);
-	public FlowMemQueue  memqueue = new FlowMemQueue();
+	public FlowMemQueue memqueue = new FlowMemQueue();
 
 	public static final int allheight = 700;
 	public static final int allwidth = 1000;
@@ -98,20 +102,51 @@ public class TomasuloDisplay extends Application {
 		VBox MulBox = new VBox();
 		MulBox.setSpacing(5);
 		MulBox.getChildren().addAll(mullabel, mulqueue);
-		
+
 		Label reglabel = new Label("寄存器堆");
 		reglabel.setFont(new Font("Tahoma", 20));
 		VBox RegBox = new VBox();
 		RegBox.setSpacing(5);
 		RegBox.setPadding(new Insets(10, 10, 10, 10));
 		RegBox.getChildren().addAll(reglabel, regqueue);
-		
+
 		Label memlabel = new Label("内存");
+		Button memButton = new Button("+");
+		memButton.setOnAction((ActionEvent e) -> {
+			Stage window = new Stage();
+			window.setTitle("添加内存");
+			window.initModality(Modality.APPLICATION_MODAL);
+			Label addrLabel = new Label("Addr");
+			TextField addr = new TextField();
+			Label valLabel = new Label("val");
+			TextField val = new TextField();
+			Button OK = new Button("OK");
+			Button cancel = new Button("Cancel");
+			OK.setOnAction((ActionEvent e1) -> {
+				if(addr.getText() != "" && val.getText() != ""){
+					con.setMem(Integer.parseInt(addr.getText()), Double.parseDouble(val.getText()));
+					update(con.log());
+				}
+				window.close();
+			});
+			cancel.setOnAction((ActionEvent e1) -> window.close());
+			VBox layout = new VBox();
+			HBox inputs = new HBox();
+			HBox buttons = new HBox();
+			inputs.getChildren().addAll(addrLabel, addr, valLabel, val);
+			buttons.getChildren().addAll(OK, cancel);
+			layout.getChildren().addAll(inputs, buttons);
+			Scene scene = new Scene(layout);
+			window.setScene(scene);
+			window.showAndWait();	
+		});
 		memlabel.setFont(new Font("Tahoma", 20));
 		VBox MemBox = new VBox();
+		HBox MemInput = new HBox();
+		MemInput.getChildren().addAll(memlabel, memButton);
 		MemBox.setSpacing(5);
 		MemBox.setPadding(new Insets(10, 10, 10, 10));
-		MemBox.getChildren().addAll(memlabel, memqueue);
+		MemBox.getChildren().addAll(MemInput, memqueue);
 
 		HBox bl = new HBox();
 		GridPane ButtonList = initButtons();
@@ -131,7 +166,7 @@ public class TomasuloDisplay extends Application {
 		VBox l2 = new VBox();
 		l2.getChildren().addAll(instBox, AddBox);
 		l2.setPadding(new Insets(0, 30, 0, 0));
-		
+
 		VBox l3 = new VBox();
 		l3.getChildren().addAll(MemBox, MulBox);
 		l3.setPadding(new Insets(0, 30, 0, 0));
@@ -146,9 +181,6 @@ public class TomasuloDisplay extends Application {
 	private GridPane initButtons() {
 		// Init Buttons
 		GridPane ButtonList = new GridPane();
-		String ButtonStyle = "-fx-text-fill: white; " + "-fx-font: 15 arial;"
-				+ "-fx-font-weight: bold;-fx-background-color: linear-gradient(#61a2b1, #2A5058);"
-				+ "-fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );";
 		Button LoadButton = new Button("Load");
 		Button InputButton = new Button("Input");
 		Button ResetButton = new Button("Reset");
@@ -223,7 +255,6 @@ public class TomasuloDisplay extends Application {
 		StartButton.setOnAction((ActionEvent e) -> {
 			LoadButton.setDisable(true);
 			InputButton.setDisable(true);
-			StartButton.setDisable(true);
 			ResetButton.setDisable(true);
 			StartButton.setDisable(true);
 			NextButton.setDisable(true);
@@ -238,8 +269,7 @@ public class TomasuloDisplay extends Application {
 					if (con.isFinish()) {
 						LoadButton.setDisable(false);
 						InputButton.setDisable(false);
-						StartButton.setDisable(true);
-						ResetButton.setDisable(true);
+						ResetButton.setDisable(false);
 						StopButton.setDisable(true);
 						timer.pause();
 					}
@@ -256,7 +286,6 @@ public class TomasuloDisplay extends Application {
 			if (con.isFinish()) {
 				LoadButton.setDisable(false);
 				InputButton.setDisable(false);
-				StartButton.setDisable(false);
 				ResetButton.setDisable(false);
 				StartButton.setDisable(true);
 				NextButton.setDisable(true);
@@ -268,7 +297,6 @@ public class TomasuloDisplay extends Application {
 		StopButton.setOnAction((ActionEvent e) -> {
 			LoadButton.setDisable(false);
 			InputButton.setDisable(false);
-			StartButton.setDisable(false);
 			ResetButton.setDisable(false);
 			StartButton.setDisable(false);
 			NextButton.setDisable(false);
