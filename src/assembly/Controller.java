@@ -51,7 +51,7 @@ public class Controller {
 		ar.reset();
 		mr.reset();
 		mb.reset();
-		mem.reset();
+//		mem.reset();
 	}
 	
 	public void addIns(ArrayList<String> list){
@@ -78,6 +78,14 @@ public class Controller {
 	
 	public int getCycle(){
 		return cycle;
+	}
+	
+	public void setMem(int addr, double val){
+		mem.store(addr, val);
+	}
+	
+	public void setReg(int num, double val){
+		reg.userSetValue(num, val);
 	}
 	
 	public HashMap<String, String[][]> log() {
@@ -151,4 +159,3 @@ public class Controller {
 		}
 	}
 }
-
