@@ -66,6 +66,7 @@ public class CalcResSta implements ResSta, CDBReceiver {
 				x.ins = ins;
 				x.value[0] = reg.getValue(ins.src0);
 				x.value[1] = reg.getValue(ins.src1);
+				x.in = false;
 				reg.setValue(ins.dst, x.name);
 				break;
 			}
@@ -75,8 +76,9 @@ public class CalcResSta implements ResSta, CDBReceiver {
 	public void send(int cycle) {
 		// TODO add clock
 		for (int i = 0; i < resSize && !exe.full(); ++i)
-			if (res[i].busy && res[i].value[0].ready() && res[i].value[1].ready()) {
+			if (!res[i].in && res[i].busy && res[i].value[0].ready() && res[i].value[1].ready()) {
 				res[i].ins.finish(Instruction.EN, cycle);
+				res[i].in = true;
 				exe.get(res[i]);
 			}
 	}

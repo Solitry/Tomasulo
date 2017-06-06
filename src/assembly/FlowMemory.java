@@ -22,7 +22,8 @@ public class FlowMemory implements Executor {
 
 	@Override
 	public boolean full() {
-		return list.size() >= MEM_TIME + 1;
+		//return list.size() >= MEM_TIME + 1;
+		return !list.isEmpty() && list.get(list.size() - 1).restTime >= MEM_TIME;
 	}
 
 	@Override

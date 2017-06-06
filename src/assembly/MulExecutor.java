@@ -3,7 +3,7 @@ package assembly;
 import type.Instruction;
 import type.ResItem;
 
-public class MulExecutor implements Executor{
+public class MulExecutor implements Executor {
 	
 	public final static int INSTR_MUL_TIME = 10;
 	public final static int INSTR_DIV_TIME = 40;

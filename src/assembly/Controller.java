@@ -12,8 +12,8 @@ public class Controller {
 	private CalcResSta mr = null;
 	
 	private FlowMemory mem = null;
-	private AddExecutor adder = null;
-	private MulExecutor multer = null;
+	private FlowAddExecutor adder = null;
+	private FlowMulExecutor multer = null;
 	
 	private CDB cdb = null;
 	
@@ -24,8 +24,8 @@ public class Controller {
 		cdb = new CDB();
 		
 		mem = new FlowMemory();
-		adder = new AddExecutor();
-		multer = new MulExecutor();
+		adder = new FlowAddExecutor();
+		multer = new FlowMulExecutor();
 		
 		mb = new MemBuffer(mem, reg);
 		ar = new CalcResSta(CalcResSta.ADDER, adder, reg);
@@ -117,14 +117,24 @@ public class Controller {
 		list.add("DIVD F10,F0,F6");
 		list.add("ADDD F6,F8,F2");
 		*/
-		
+		/*
 		list.add("LD F6,34");
 		list.add("LD F2,45");
 		list.add("MULD F0,F2,F4");
 		list.add("SUBD F8,F6,F2");
 		list.add("DIVD F10,F0,F6");
 		list.add("ADDD F6,F8,F2");
-		
+		*/
+		/*
+		list.add("ADDD F0,F8,F9");
+		list.add("ADDD F1,F8,F9");
+		list.add("ADDD F2,F8,F9");
+		list.add("ADDD F3,F8,F9");
+		*/
+		list.add("DIVD F0,F8,F9");
+		list.add("MULD F1,F8,F9");
+		list.add("DIVD F2,F8,F9");
+		list.add("MULD F3,F8,F9");
 		/*
 		list.add("LD F0,80");
 		list.add("MULD F4,F0,F2");
