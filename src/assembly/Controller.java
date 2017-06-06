@@ -51,7 +51,8 @@ public class Controller {
 		ar.reset();
 		mr.reset();
 		mb.reset();
-//		mem.reset();
+		adder.reset();
+		multer.reset();
 	}
 	
 	public void addIns(ArrayList<String> list){

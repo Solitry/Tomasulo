@@ -48,10 +48,12 @@ public class TomasuloDisplay extends Application {
 	public InstQueue instqueue = new InstQueue();
 	public MemBufQueue loadqueue = new MemBufQueue("Load", 3);
 	public MemBufQueue storequeue = new MemBufQueue("Store", 3);
-	public RegQueue regqueue = new RegQueue(10);
+	public RegQueue regqueue = new RegQueue(32);
 	public CalcQueue addqueue = new CalcQueue("Add", 3);
 	public CalcQueue mulqueue = new CalcQueue("Mul", 2);
 	public FlowMemQueue memqueue = new FlowMemQueue();
+	public AsmLineQueue alaQueue = new AsmLineQueue(2);
+	public AsmLineQueue mlaQueue = new AsmLineQueue(6);
 
 	public static final int allheight = 700;
 	public static final int allwidth = 1000;
@@ -60,7 +62,8 @@ public class TomasuloDisplay extends Application {
 	private Timeline timer = null;
 	private Label cycCount = null;
 	private Stage primaryStage = null;
-
+	private HashMap<String, String[][]> logs = null;
+	
 	@Override
 	public void start(Stage primaryStage) {
 		primaryStage.setTitle("Tomasulo算法演示模拟平台");
@@ -73,15 +76,15 @@ public class TomasuloDisplay extends Application {
 		instlabel.setFont(new Font("Tahoma", 20));
 		VBox instBox = new VBox();
 		instBox.setSpacing(5);
-		instBox.setPadding(new Insets(10, 10, 10, 10));
 		instBox.getChildren().addAll(instlabel, instqueue);
+		instBox.setPadding(new Insets(10, 10, 10, 10));
 
 		Label loadlabel = new Label("Load 队列");
 		loadlabel.setFont(new Font("Tahoma", 20));
 		VBox LoadBox = new VBox();
 		LoadBox.setSpacing(5);
-		LoadBox.setPadding(new Insets(10, 10, 10, 10));
 		LoadBox.getChildren().addAll(loadlabel, loadqueue);
+		LoadBox.setPadding(new Insets(10, 10, 10, 10));
 
 		Label storelabel = new Label("Store 队列");
 		storelabel.setFont(new Font("Tahoma", 20));
@@ -95,20 +98,35 @@ public class TomasuloDisplay extends Application {
 		VBox AddBox = new VBox();
 		AddBox.setSpacing(5);
 		AddBox.getChildren().addAll(addlabel, addqueue);
-		AddBox.setPadding(new Insets(0, 20, 0, 0));
+		AddBox.setPadding(new Insets(10, 10, 10, 10));
+		
+		Label alaLabel = new Label("加法器");
+		alaLabel.setFont(new Font("Tahoma", 20));
+		VBox alaBox = new VBox();
+		alaBox.setSpacing(5);
+		alaBox.getChildren().addAll(alaLabel, alaQueue);
+		alaBox.setPadding(new Insets(10, 10, 10, 10));
 
 		Label mullabel = new Label("乘除保留站");
 		mullabel.setFont(new Font("Tahoma", 20));
 		VBox MulBox = new VBox();
 		MulBox.setSpacing(5);
 		MulBox.getChildren().addAll(mullabel, mulqueue);
+		MulBox.setPadding(new Insets(10, 10, 10, 10));
+		
+		Label mlaLabel = new Label("乘法器");
+		mlaLabel.setFont(new Font("Tahoma", 20));
+		VBox mlaBox = new VBox();
+		mlaBox.setSpacing(5);
+		mlaBox.getChildren().addAll(mlaLabel, mlaQueue);
+		mlaBox.setPadding(new Insets(10, 10, 10, 10));
 
 		Label reglabel = new Label("寄存器堆");
 		reglabel.setFont(new Font("Tahoma", 20));
 		VBox RegBox = new VBox();
 		RegBox.setSpacing(5);
-		RegBox.setPadding(new Insets(10, 10, 10, 10));
 		RegBox.getChildren().addAll(reglabel, regqueue);
+		RegBox.setPadding(new Insets(10, 10, 10, 10));
 
 		Label memlabel = new Label("内存");
 		Button memButton = new Button("+");
@@ -161,15 +179,15 @@ public class TomasuloDisplay extends Application {
 		HBox root = new HBox();
 		VBox l1 = new VBox();
 		l1.getChildren().addAll(bl, LoadBox, StoreBox);
-		l1.setPadding(new Insets(0, 30, 0, 0));
+		l1.setPadding(new Insets(10, 10, 10, 10));
 
 		VBox l2 = new VBox();
-		l2.getChildren().addAll(instBox, AddBox);
-		l2.setPadding(new Insets(0, 30, 0, 0));
+		l2.getChildren().addAll(instBox, AddBox, alaBox);
+		l2.setPadding(new Insets(10, 10, 10, 10));
 
 		VBox l3 = new VBox();
-		l3.getChildren().addAll(MemBox, MulBox);
-		l3.setPadding(new Insets(0, 30, 0, 0));
+		l3.getChildren().addAll(MemBox, MulBox, mlaBox);
+		l3.setPadding(new Insets(10, 10, 10, 10));
 
 		root.getChildren().addAll(l1, l2, l3, RegBox);
 		Scene scene = new Scene(root);
@@ -194,15 +212,17 @@ public class TomasuloDisplay extends Application {
 			fileChooser.setTitle("打开指令文件");
 			File file = fileChooser.showOpenDialog(primaryStage);
 			try {
-				BufferedReader reader = new BufferedReader(new FileReader(file));
-				ArrayList<String> list = new ArrayList<String>();
-				for (String line; (line = reader.readLine()) != null;)
-					list.add(line);
-				con.addIns(list);
-				update(con.log());
-				reader.close();
-				StartButton.setDisable(false);
-				NextButton.setDisable(false);
+				if(file != null && file.exists()){
+					BufferedReader reader = new BufferedReader(new FileReader(file));
+					ArrayList<String> list = new ArrayList<String>();
+					for (String line; (line = reader.readLine()) != null;)
+						list.add(line);
+					con.addIns(list);
+					update(con.log());
+					reader.close();
+					StartButton.setDisable(false);
+					NextButton.setDisable(false);
+				}
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
@@ -214,10 +234,12 @@ public class TomasuloDisplay extends Application {
 			window.setTitle("输入指令");
 			window.initModality(Modality.APPLICATION_MODAL);
 			TextArea input = new TextArea();
+			input.setText(getList());
 			Button OK = new Button("OK");
 			Button cancel = new Button("Cancel");
 			OK.setOnAction((ActionEvent e1) -> {
 				try {
+					System.out.println(input.getText());
 					BufferedReader reader = new BufferedReader(new StringReader(input.getText()));
 					ArrayList<String> list = new ArrayList<String>();
 					for (String line; (line = reader.readLine()) != null;)
@@ -246,8 +268,8 @@ public class TomasuloDisplay extends Application {
 		ResetButton.setOnAction((ActionEvent e) -> {
 			con.reset();
 			update(con.log());
-			StartButton.setDisable(true);
-			NextButton.setDisable(true);
+			StartButton.setDisable(false);
+			NextButton.setDisable(false);
 		});
 
 		StartButton.setStyle(ButtonStyle);
@@ -315,6 +337,7 @@ public class TomasuloDisplay extends Application {
 	}
 
 	void update(HashMap<String, String[][]> logs) {
+		this.logs = logs;
 		cycCount.setText(Integer.toString(con.getCycle()));
 		instqueue.setData(logs.get("Inst"));
 		loadqueue.setData(logs.get("Load"));
@@ -323,8 +346,20 @@ public class TomasuloDisplay extends Application {
 		addqueue.setData(logs.get("Add"));
 		mulqueue.setData(logs.get("Mult"));
 		memqueue.setData(logs.get("Mem"));
+		alaQueue.setData(logs.get("Add"));
+		mlaQueue.setData(logs.get("Mult"));
 	}
 
+	String getList(){
+		String list = "";
+		if(logs != null && logs.containsKey("Inst")){
+			String[][] args = logs.get("Inst");
+			for(String[] ins : args)
+				list += ins[1] + "\n";
+		}
+		return list;
+	}
+	
 	/**
 	 * @param args
 	 *            the command line arguments

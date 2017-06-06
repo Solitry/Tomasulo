@@ -20,48 +20,24 @@ public class Inst {
     }
     
      
-    public String getSt() {
-        return items[0].get();
-    }
-    
     public SimpleStringProperty StProperty() {
         return items[0];
-    }
-    
-    public String getIns() {
-        return items[1].get();
     }
     
     public SimpleStringProperty InsProperty() {
         return items[1];
     }
-    
-    public String getID() {
-        return items[2].get();
-    }   
-    
+
     public SimpleStringProperty IDProperty() {
         return items[2];
-    }
-    
-    public String getEX() {
-        return items[3].get();
     }
     
     public SimpleStringProperty EXProperty() {
         return items[3];
     }
-    
-    public String getMEM() {
-        return items[4].get();
-    }
-    
+
     public SimpleStringProperty MEMProperty() {
         return items[4];
-    }
-    
-    public String getWB() {
-        return items[5].get();
     }
     
     public SimpleStringProperty WBProperty() {

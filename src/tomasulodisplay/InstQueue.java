@@ -5,7 +5,6 @@
  */
 package tomasulodisplay;
 
-import javafx.beans.property.SimpleStringProperty; 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
@@ -18,11 +17,11 @@ import javafx.scene.control.cell.PropertyValueFactory;
  */
 public class InstQueue extends TableView<Inst> {
 	private final ObservableList<Inst> data = FXCollections.observableArrayList();
-	private int Max_item;
-
 	static private String[] items = new String[] { "St", "Ins", "ID", "EX", "MEM", "WB" };
+	@SuppressWarnings("rawtypes")
 	private TableColumn[] cols = null;
 
+	@SuppressWarnings("unchecked")
 	public InstQueue() {
 		super();
 		this.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
@@ -31,8 +30,8 @@ public class InstQueue extends TableView<Inst> {
 
 		cols = new TableColumn[items.length];
 		for (int i = 0; i < cols.length; ++i) {
-			cols[i] = new TableColumn(items[i]);
-			cols[i].setCellValueFactory(new PropertyValueFactory(items[i]));
+			cols[i] = new TableColumn<Object, Object>(items[i]);
+			cols[i].setCellValueFactory(new PropertyValueFactory<Object, Object>(items[i]));
 			cols[i].setSortable(false);
 		}
 
@@ -42,9 +41,12 @@ public class InstQueue extends TableView<Inst> {
 	}
 
 	public void setData(String[][] datas) {
-		for (int i = data.size(); i < datas.length; ++i)
-			data.add(new Inst());
-		for (int i = 0; i < data.size(); ++i)
-			data.get(i).setData(datas[i]);
+		data.clear();
+		for (int i = 0; i < datas.length; ++i){
+			Inst ins = new Inst();
+			ins.setData(datas[i]);
+			data.add(ins);
+		}
+		this.setItems(data);
 	}
 }

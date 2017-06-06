@@ -19,14 +19,16 @@ import javafx.scene.control.cell.PropertyValueFactory;
 public class CalcQueue extends TableView<Calc> {
 
 	private final ObservableList<Calc> data = FXCollections.observableArrayList();
-	private int Max_item;
+	private int maxItem;
 	
 	static private String[] items = new String[] { "Name", "Busy", "Ins", "Time", "Val1", "Val2"};
+	@SuppressWarnings("rawtypes")
 	private TableColumn[] cols = null;
 
+	@SuppressWarnings("unchecked")
 	public CalcQueue(String AddnameString, int Max_Item) {
 		super();
-		this.Max_item = Max_Item;
+		this.maxItem = Max_Item;
 		this.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 		this.setPrefHeight(TomasuloDisplay.allheight / 5);
 
@@ -35,8 +37,8 @@ public class CalcQueue extends TableView<Calc> {
 
 		cols = new TableColumn[items.length];
 		for (int i = 0; i < cols.length; ++i) {
-			cols[i] = new TableColumn(items[i]);
-			cols[i].setCellValueFactory(new PropertyValueFactory(items[i]));
+			cols[i] = new TableColumn<Object, Object>(items[i]);
+			cols[i].setCellValueFactory(new PropertyValueFactory<Object, Object>(items[i]));
 			cols[i].setSortable(false);
 		}
 		this.setItems(data);
@@ -44,7 +46,7 @@ public class CalcQueue extends TableView<Calc> {
 	}
 	
 	public void setData(String[][] datas){
-		for(int i = 0; i < Max_item; ++i)
+		for(int i = 0; i < maxItem; ++i)
 			data.get(i).setData(datas[i]);
 	}
 }

@@ -103,10 +103,6 @@ public class FlowMemory implements Executor {
 
 	public void log(HashMap<String, String[][]> logs) {
 		System.out.println("Memory:");
-
-		for (ResItem it : list)
-			System.out.println(it.ins.raw + " " + it.restTime);
-
 		System.out.format("%-6s%-10s\n", "addr", "value");
 
 		for (int i = 0; i < storage.size(); ++i) {

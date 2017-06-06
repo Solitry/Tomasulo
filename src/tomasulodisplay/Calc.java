@@ -21,50 +21,26 @@ public class Calc {
     		items[i] = new SimpleStringProperty("");
     }
     
-    public String getName() {
-        return items[0].get();
-    }
-    
     public SimpleStringProperty NameProperty() {
         return items[0];
-    }
-    
-    public String getBusy() {
-        return items[1].get();
     }
     
     public SimpleStringProperty BusyProperty() {
         return items[1];
     }
     
-    public String getIns() {
-        return items[2].get();
-    }   
-    
     public SimpleStringProperty InsProperty() {
         return items[2];
-    }
-    
-    public String getTime() {
-        return items[3].get();
     }
     
     public SimpleStringProperty TimeProperty() {
         return items[3];
     }
     
-    public String getVal1() {
-        return items[4].get();
-    }
-    
     public SimpleStringProperty Val1Property() {
         return items[4];
     }
-    
-    public String getVal2() {
-        return items[5].get();
-    }
-    
+
     public SimpleStringProperty Val2Property() {
         return items[5];
     }

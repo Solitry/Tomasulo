@@ -20,8 +20,10 @@ public class MemBufQueue extends TableView<MemBuf> {
 	private final ObservableList<MemBuf> data = FXCollections.observableArrayList();
 	private int Max_item;
 	static private String[] items = new String[] { "Name", "Busy", "Ins", "Time", "Reg", "Addr"};
+	@SuppressWarnings("rawtypes")
 	private TableColumn[] cols = null;
 
+	@SuppressWarnings("unchecked")
 	public MemBufQueue(String name, int Max_Item) {
 		super();
 		this.Max_item = Max_Item;
@@ -33,8 +35,8 @@ public class MemBufQueue extends TableView<MemBuf> {
 
 		cols = new TableColumn[items.length];
 		for (int i = 0; i < cols.length; ++i) {
-			cols[i] = new TableColumn(items[i]);
-			cols[i].setCellValueFactory(new PropertyValueFactory(items[i]));
+			cols[i] = new TableColumn<Object, Object>(items[i]);
+			cols[i].setCellValueFactory(new PropertyValueFactory<Object, Object>(items[i]));
 			cols[i].setSortable(false);
 		}
 

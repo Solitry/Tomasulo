@@ -51,10 +51,13 @@ public class Instruction {
 		finishTime[stage] = cycle;
 	}
 
-	public Instruction(String str, int count) {
+	public Instruction(String str, int count) throws Exception {
 		// GJH: translate str into instruction-type
 		//System.err.println(str + " " + count);
 		int p0 = str.indexOf(' ');
+		if(str.charAt(p0 + 1) != 'F')
+			throw new Exception();
+		
 		opName = str.substring(0, p0);
 		for (int i = 0; i < 6; ++i)
 			if (opName.equals(INSTR_TYPE[i]))
@@ -62,6 +65,8 @@ public class Instruction {
 		int p1 = str.indexOf(',');
 		if (opLabel < 4) {
 			int p2 = str.indexOf(',', p1 + 1);
+			if(str.charAt(p1 + 1) != 'F' || str.charAt(p2 + 1) != 'F')
+				throw new Exception();
 			dst = Integer.parseInt(str.substring(p0 + 2, p1));
 			src0 = Integer.parseInt(str.substring(p1 + 2, p2));
 			src1 = Integer.parseInt(str.substring(p2 + 2));
@@ -85,8 +90,17 @@ public class Instruction {
 		return finishTime[WB] != -1;
 	}
 	
+	public void reset(){
+		for(int i = 0; i < STAGE_NUM; ++i)
+			finishTime[i] = -1;
+	}
+	
 	public static void main(String[] args) {
-		Instruction ins = new Instruction("ADDD F6,F0,F8", 0);
-		System.out.println(ins.opLabel + " " + ins.dst + " " + ins.src0 + " " + ins.src1);
+		try {
+			Instruction ins = new Instruction("ADDD F6,F0,F8", 0);
+			System.out.println(ins.opLabel + " " + ins.dst + " " + ins.src0 + " " + ins.src1);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

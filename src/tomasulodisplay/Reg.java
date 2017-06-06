@@ -21,16 +21,8 @@ public class Reg {
     		items[i] = new SimpleStringProperty("");
     }
     
-    public String getName() {
-        return items[0].get();
-    }
-    
     public SimpleStringProperty NameProperty() {
         return items[0];
-    }
-    
-    public String getVal() {
-        return items[1].get();
     }
     
     public SimpleStringProperty ValProperty() {

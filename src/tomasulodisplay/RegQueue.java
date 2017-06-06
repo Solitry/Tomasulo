@@ -21,8 +21,10 @@ public class RegQueue extends TableView<Reg> {
 	private int Max_item;
 
 	static private String[] items = new String[] { "Name", "Val"};
+	@SuppressWarnings("rawtypes")
 	private TableColumn[] cols = null;
 
+	@SuppressWarnings("unchecked")
 	public RegQueue(int Max_Item) {
 		super();
 		this.Max_item = Max_Item;
@@ -34,8 +36,8 @@ public class RegQueue extends TableView<Reg> {
 
 		cols = new TableColumn[items.length];
 		for (int i = 0; i < cols.length; ++i) {
-			cols[i] = new TableColumn(items[i]);
-			cols[i].setCellValueFactory(new PropertyValueFactory(items[i]));
+			cols[i] = new TableColumn<Object, Object>(items[i]);
+			cols[i].setCellValueFactory(new PropertyValueFactory<Object, Object>(items[i]));
 			cols[i].setSortable(false);
 		}
 

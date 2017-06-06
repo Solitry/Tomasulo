@@ -21,16 +21,8 @@ public class FlowMem {
     		items[i] = new SimpleStringProperty("");
     }
     
-    public String getAddr() {
-        return items[0].get();
-    }
-    
     public SimpleStringProperty AddrProperty() {
         return items[0];
-    }
-    
-    public String getVal() {
-        return items[1].get();
     }
     
     public SimpleStringProperty ValProperty() {

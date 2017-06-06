@@ -5,7 +5,6 @@
  */
 package tomasulodisplay;
 
-import javafx.beans.property.SimpleStringProperty; 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
@@ -18,11 +17,11 @@ import javafx.scene.control.cell.PropertyValueFactory;
  */
 public class FlowMemQueue extends TableView<FlowMem> {
 	private final ObservableList<FlowMem> data = FXCollections.observableArrayList();
-	private int Max_item;
-
 	static private String[] items = new String[] { "Addr", "Val"};
+	@SuppressWarnings("rawtypes")
 	private TableColumn[] cols = null;
 
+	@SuppressWarnings("unchecked")
 	public FlowMemQueue() {
 		super();
 		this.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
@@ -31,8 +30,8 @@ public class FlowMemQueue extends TableView<FlowMem> {
 
 		cols = new TableColumn[items.length];
 		for (int i = 0; i < cols.length; ++i) {
-			cols[i] = new TableColumn(items[i]);
-			cols[i].setCellValueFactory(new PropertyValueFactory(items[i]));
+			cols[i] = new TableColumn<Object, Object>(items[i]);
+			cols[i].setCellValueFactory(new PropertyValueFactory<Object, Object>(items[i]));
 			cols[i].setSortable(false);
 		}
 

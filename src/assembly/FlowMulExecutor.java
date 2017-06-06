@@ -124,4 +124,8 @@ public class FlowMulExecutor implements Executor {
 			return rt - 1;
 		return (rt - 2) % 6 + 1;
 	}
+	
+	void reset(){
+		list.clear();
+	}
 }

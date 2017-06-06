@@ -52,4 +52,7 @@ public class FlowAddExecutor implements Executor {
 		}
 	}
 
+	void reset(){
+		list.clear();
+	}
 }

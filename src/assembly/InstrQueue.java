@@ -81,14 +81,22 @@ public class InstrQueue {
 	
 	public void reset() {
 		pos = 0;
-		strList.clear();
-		insList.clear();
+		for(Instruction ins : insList)
+			ins.reset();
 	}
 	
 	public void addIns(ArrayList<String> newList){
+		System.out.println(newList.size());
+		insList.clear();
+		strList.clear();
 		for(String str : newList){
-			strList.add(str);
-			insList.add(new Instruction(str, insList.size()));
+			try {
+				Instruction ins = new Instruction(str, insList.size());
+				insList.add(ins);
+				strList.add(str);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	
@@ -134,4 +142,3 @@ public class InstrQueue {
 		logs.put("Inst", datas);
 	}
 }
-
