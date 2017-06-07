@@ -20,6 +20,7 @@ import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -27,7 +28,10 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
@@ -47,24 +51,28 @@ public class TomasuloDisplay extends Application {
 	// 须在start函数最后把部件加到显示区域
 	public InstQueue instqueue = new InstQueue();
 	public MemBufQueue loadqueue = new MemBufQueue("Load", 3);
-	public MemBufQueue storequeue = new MemBufQueue("Store", 3);
+	
+        public MemBufQueue storequeue = new MemBufQueue("Store", 3);
 	public RegQueue regqueue = new RegQueue(32);
 	public CalcQueue addqueue = new CalcQueue("Add", 3);
 	public CalcQueue mulqueue = new CalcQueue("Mul", 2);
 	public FlowMemQueue memqueue = new FlowMemQueue();
 	public AsmLineQueue alaQueue = new AsmLineQueue(2);
 	public AsmLineQueue mlaQueue = new AsmLineQueue(6);
-
+        public Rectangle Bus;
 	public static final int allheight = 700;
-	public static final int allwidth = 1000;
-
+	public static final int allwidth = 1300;
+        public static final double lineDelta = 20;
+        public static final double goldrate = 0.618;
 	private Controller con = null;
 	private Timeline timer = null;
 	private Label cycCount = null;
 	private Stage primaryStage = null;
 	private HashMap<String, String[][]> logs = null;
-	
-	@Override
+	public MoveLine inst2add,inst2mul,add2add,mul2mul,inst2load,inst2store;
+	public MoveLine add2bus,mul2bus,bus2reg,store2bus,load2bus;
+
+        @Override
 	public void start(Stage primaryStage) {
 		primaryStage.setTitle("Tomasulo算法演示模拟平台");
 		this.primaryStage = primaryStage;
@@ -84,13 +92,13 @@ public class TomasuloDisplay extends Application {
 		VBox LoadBox = new VBox();
 		LoadBox.setSpacing(5);
 		LoadBox.getChildren().addAll(loadlabel, loadqueue);
-		LoadBox.setPadding(new Insets(10, 10, 10, 10));
+		LoadBox.setPadding(new Insets(10, 50, 10, 10));
 
 		Label storelabel = new Label("Store 队列");
 		storelabel.setFont(new Font("Tahoma", 20));
 		VBox StoreBox = new VBox();
 		StoreBox.setSpacing(5);
-		StoreBox.setPadding(new Insets(10, 10, 10, 10));
+		StoreBox.setPadding(new Insets(10, 50, 10, 10));
 		StoreBox.getChildren().addAll(storelabel, storequeue);
 
 		Label addlabel = new Label("加减保留站");
@@ -98,28 +106,28 @@ public class TomasuloDisplay extends Application {
 		VBox AddBox = new VBox();
 		AddBox.setSpacing(5);
 		AddBox.getChildren().addAll(addlabel, addqueue);
-		AddBox.setPadding(new Insets(10, 10, 10, 10));
+		AddBox.setPadding(new Insets(50, 10, 10, 10));
 		
 		Label alaLabel = new Label("加法器");
 		alaLabel.setFont(new Font("Tahoma", 20));
 		VBox alaBox = new VBox();
 		alaBox.setSpacing(5);
 		alaBox.getChildren().addAll(alaLabel, alaQueue);
-		alaBox.setPadding(new Insets(10, 10, 10, 10));
+		alaBox.setPadding(new Insets(50, 10, 10, 10));
 
 		Label mullabel = new Label("乘除保留站");
 		mullabel.setFont(new Font("Tahoma", 20));
 		VBox MulBox = new VBox();
 		MulBox.setSpacing(5);
 		MulBox.getChildren().addAll(mullabel, mulqueue);
-		MulBox.setPadding(new Insets(10, 10, 10, 10));
+		MulBox.setPadding(new Insets(50, 10, 10, 10));
 		
 		Label mlaLabel = new Label("乘法器");
 		mlaLabel.setFont(new Font("Tahoma", 20));
 		VBox mlaBox = new VBox();
 		mlaBox.setSpacing(5);
 		mlaBox.getChildren().addAll(mlaLabel, mlaQueue);
-		mlaBox.setPadding(new Insets(10, 10, 10, 10));
+		mlaBox.setPadding(new Insets(50, 10, 10, 10));
 
 		Label reglabel = new Label("寄存器堆");
 		reglabel.setFont(new Font("Tahoma", 20));
@@ -168,18 +176,24 @@ public class TomasuloDisplay extends Application {
 
 		HBox bl = new HBox();
 		GridPane ButtonList = initButtons();
-		Label cyclabel = new Label("Cycle:");
+		Label cyclabel = new Label("  Cycle:");
+                cyclabel.setFont(new Font("Tahoma", 17));
+
 		cycCount = new Label("");
+                cycCount.setFont(new Font("Tahoma", 17));
+
 		bl.getChildren().addAll(ButtonList, cyclabel, cycCount);
 
 		con = new Controller();
 		update(con.log());
 
 		// Insets top right bottom left
-		HBox root = new HBox();
+		VBox updownroot = new VBox();
+                HBox root = new HBox();
+
 		VBox l1 = new VBox();
 		l1.getChildren().addAll(bl, LoadBox, StoreBox);
-		l1.setPadding(new Insets(10, 10, 10, 10));
+		l1.setPadding(new Insets(10, 10, 10, 30));
 
 		VBox l2 = new VBox();
 		l2.getChildren().addAll(instBox, AddBox, alaBox);
@@ -188,13 +202,156 @@ public class TomasuloDisplay extends Application {
 		VBox l3 = new VBox();
 		l3.getChildren().addAll(MemBox, MulBox, mlaBox);
 		l3.setPadding(new Insets(10, 10, 10, 10));
+                
+                StackPane buspane = new StackPane();
+                Bus = new Rectangle(allwidth, allheight/20,Color.WHITE);
+                Bus.setStroke(Color.GRAY);
+                Bus.strokeWidthProperty().set(3);
+		Label buslabel = new Label("总线");
+		buslabel.setFont(new Font("Tahoma", 25));
+                
+                buspane.getChildren().addAll(Bus,buslabel);
+		buspane.setPadding(new Insets(30, 0, 0, 0));
 
-		root.getChildren().addAll(l1, l2, l3, RegBox);
-		Scene scene = new Scene(root);
+                root.getChildren().addAll(l1, l2, l3, RegBox);
+                updownroot.getChildren().addAll(root, buspane);
+                updownroot.setPrefHeight(allheight);
+                updownroot.setPrefWidth(allwidth);
 
-		primaryStage.setScene(scene);
-		primaryStage.show();
-	}
+                //Scene scene = new Scene(root);
+                Scene scene = new Scene(new Group());  
+
+               
+                inst2add = new MoveLine();
+                inst2mul = new MoveLine();
+                add2add = new MoveLine();
+                mul2mul = new MoveLine();
+                inst2load = new MoveLine();
+                inst2store = new MoveLine();
+                add2bus = new MoveLine();
+                mul2bus = new MoveLine();
+                bus2reg = new MoveLine();
+                load2bus = new MoveLine();
+                store2bus = new MoveLine();
+                
+                ((Group) scene.getRoot()).getChildren().addAll(updownroot,inst2add,inst2mul,add2add,mul2mul,inst2load,inst2store);  
+                ((Group) scene.getRoot()).getChildren().addAll(add2bus,mul2bus,bus2reg,load2bus,store2bus);  
+
+                primaryStage.setScene(scene);
+                primaryStage.show();
+		
+                double x1 = instqueue.getLayoutX()+instBox.getLayoutX()+l2.getLayoutX()+instqueue.getWidth()*(1-goldrate);
+                double y1 = instqueue.getLayoutY()+instBox.getLayoutY()+l2.getLayoutY()+instqueue.getHeight();  
+                double x2;
+                double y2 = addqueue.getLayoutY()+AddBox.getLayoutY()+l2.getLayoutY();//+addqueue.getHeight();  
+
+                inst2add.update(new Double[]{
+                    x1, y1+2,
+                    x1, y2-2,
+                    });
+                
+                x1 = instqueue.getLayoutX()+instBox.getLayoutX()+l2.getLayoutX()+instqueue.getWidth()*goldrate;
+                y1 = instqueue.getLayoutY()+instBox.getLayoutY()+l2.getLayoutY()+instqueue.getHeight();  
+                x2 = mulqueue.getLayoutX()+MulBox.getLayoutX()+l3.getLayoutX()+mulqueue.getWidth()*(1-goldrate);
+                y2 = mulqueue.getLayoutY()+MulBox.getLayoutY()+l3.getLayoutY();  
+                    
+                inst2mul.update(new Double[] {
+                    x1, y1+2,
+                    x1, y1+(y2-y1)*(1-goldrate),
+                    x2, y1+(y2-y1)*(1-goldrate),
+                    x2, y2-2,
+                });
+
+                x1 = addqueue.getLayoutX()+AddBox.getLayoutX()+l2.getLayoutX()+addqueue.getWidth()*(1-goldrate);
+                y1 = addqueue.getLayoutY()+AddBox.getLayoutY()+l2.getLayoutY()+addqueue.getHeight();  
+                y2 = alaQueue.getLayoutY()+alaBox.getLayoutY()+l2.getLayoutY();  
+                 
+                add2add.update(new Double[] {
+                    x1, y1+2,
+                    x1, y2-2,                    
+                });
+
+
+                x1 = mulqueue.getLayoutX()+MulBox.getLayoutX()+l3.getLayoutX()+mulqueue.getWidth()*(1-goldrate);
+                y1 = mulqueue.getLayoutY()+MulBox.getLayoutY()+l3.getLayoutY()+mulqueue.getHeight();  
+                y2 = mlaQueue.getLayoutY()+mlaBox.getLayoutY()+l3.getLayoutY();  
+                                 
+                mul2mul.update(new Double[] {
+                    x1, y1+2,
+                    x1, y2-2,                    
+                });
+                
+                x1 = instqueue.getLayoutX()+instBox.getLayoutX()+l2.getLayoutX();
+                y1 = instqueue.getLayoutY()+instBox.getLayoutY()+l2.getLayoutY()+instqueue.getHeight()*(1-goldrate);  
+                x2 = loadqueue.getLayoutX()+LoadBox.getLayoutX()+l1.getLayoutX()+loadqueue.getWidth();
+                y2 = loadqueue.getLayoutY()+LoadBox.getLayoutY()+l1.getLayoutY()+loadqueue.getHeight()*(1-goldrate);  
+                
+                inst2load.update(new Double[] {
+                    x1-2, y1,
+                    x1-(x1-x2)*goldrate, y1,
+                    x1-(x1-x2)*goldrate, y2,
+                    x2+2, y2,                    
+                });
+                
+                x1 = instqueue.getLayoutX()+instBox.getLayoutX()+l2.getLayoutX();
+                y1 = instqueue.getLayoutY()+instBox.getLayoutY()+l2.getLayoutY()+instqueue.getHeight()*(goldrate);  
+                x2 = storequeue.getLayoutX()+StoreBox.getLayoutX()+l1.getLayoutX()+storequeue.getWidth();
+                y2 = storequeue.getLayoutY()+StoreBox.getLayoutY()+l1.getLayoutY()+storequeue.getHeight()*(goldrate);  
+                
+                inst2store.update(new Double[] {
+                    x1-2, y1,
+                    x1-(x1-x2)*(1-goldrate), y1,
+                    x1-(x1-x2)*(1-goldrate), y2,
+                    x2+2, y2,                    
+                });      
+                
+                x1 = alaQueue.getLayoutX()+alaBox.getLayoutX()+l2.getLayoutX()+alaQueue.getWidth()*(1-goldrate);
+                y1 = alaQueue.getLayoutY()+alaBox.getLayoutY()+l2.getLayoutY()+alaQueue.getHeight();  
+                y2 = Bus.getLayoutY()+buspane.getLayoutY()+l1.getLayoutY();  
+                
+                add2bus.update(new Double[] {
+                    x1, y1+2,
+                    x1, y2-2,                    
+                });  
+
+
+                x1 = mlaQueue.getLayoutX()+mlaBox.getLayoutX()+l3.getLayoutX()+mlaQueue.getWidth()*(1-goldrate);
+                y1 = mlaQueue.getLayoutY()+mlaBox.getLayoutY()+l3.getLayoutY()+mlaQueue.getHeight();  
+                y2 = Bus.getLayoutY()+buspane.getLayoutY()+l1.getLayoutY();  
+                
+                mul2bus.update(new Double[] {
+                    x1, y1+2,
+                    x1, y2-2,                    
+                });         
+                
+                x1 = regqueue.getLayoutX()+RegBox.getLayoutX()+regqueue.getWidth()*(1-goldrate);
+                y1 = regqueue.getLayoutY()+RegBox.getLayoutY()+regqueue.getHeight();  
+                y2 = Bus.getLayoutY()+buspane.getLayoutY()+l1.getLayoutY();  
+                
+                mul2bus.update(new Double[] {
+                    x1, y2-2,
+                    x1, y1+2,                    
+                });  
+                
+                x1 = loadqueue.getLayoutX()+LoadBox.getLayoutX()+l1.getLayoutX();
+                y1 = loadqueue.getLayoutY()+LoadBox.getLayoutY()+l1.getLayoutY()+loadqueue.getHeight()*(1-goldrate);  
+                y2 = Bus.getLayoutY()+buspane.getLayoutY()+l1.getLayoutY();  
+                
+                mul2bus.update(new Double[] {
+                    x1-2, y1,
+                    x1-20, y1,
+                    x1-20, y2,                    
+                });         
+
+                x1 = storequeue.getLayoutX()+StoreBox.getLayoutX()+l1.getLayoutX()+storequeue.getWidth()*(1-goldrate);
+                y1 = storequeue.getLayoutY()+StoreBox.getLayoutY()+l1.getLayoutY()+storequeue.getHeight();  
+                y2 = Bus.getLayoutY()+buspane.getLayoutY()+l1.getLayoutY();  
+                
+                mul2bus.update(new Double[] {
+                    x1, y1+2,
+                    x1, y2-2,                    
+                });                  
+        }
 
 	private GridPane initButtons() {
 		// Init Buttons
@@ -205,8 +362,17 @@ public class TomasuloDisplay extends Application {
 		Button StartButton = new Button("Start");
 		Button NextButton = new Button("Next");
 		Button StopButton = new Button("Stop");
+		Button ShowButton = new Button("Show");
+                int buttonwidth = allwidth/22;
+                LoadButton.setPrefWidth(buttonwidth);
+                InputButton.setPrefWidth(buttonwidth);
+                ResetButton.setPrefWidth(buttonwidth);
+                StartButton.setPrefWidth(buttonwidth);
+                NextButton.setPrefWidth(buttonwidth);
+                StopButton.setPrefWidth(buttonwidth);
+                ShowButton.setPrefWidth(buttonwidth);
 
-		LoadButton.setStyle(ButtonStyle);
+                LoadButton.setStyle(ButtonStyle);
 		LoadButton.setOnAction((ActionEvent e) -> {
 			FileChooser fileChooser = new FileChooser();
 			fileChooser.setTitle("打开指令文件");
@@ -313,7 +479,7 @@ public class TomasuloDisplay extends Application {
 				NextButton.setDisable(true);
 			}
 		});
-
+                
 		StopButton.setStyle(ButtonStyle);
 		StopButton.setDisable(true);
 		StopButton.setOnAction((ActionEvent e) -> {
@@ -325,13 +491,30 @@ public class TomasuloDisplay extends Application {
 			StopButton.setDisable(true);
 			timer.pause();
 		});
-
+                
+		ShowButton.setOnAction((ActionEvent e) -> {
+                    inst2add.play();
+                    inst2mul.play();
+                    add2add.play();
+                    mul2mul.play();
+                    inst2load.play();
+                    inst2store.play();
+                    add2bus.play();
+                    mul2bus.play();
+                    bus2reg.play();
+                    store2bus.play();
+                    load2bus.play();
+                });
+                
 		ButtonList.add(LoadButton, 0, 0);
 		ButtonList.add(InputButton, 1, 0);
 		ButtonList.add(ResetButton, 2, 0);
 		ButtonList.add(StartButton, 0, 1);
 		ButtonList.add(NextButton, 1, 1);
 		ButtonList.add(StopButton, 2, 1);
+                ButtonList.add(ShowButton, 3, 1);
+                
+                
 		ButtonList.setPadding(new Insets(0, 0, 30, 0));
 		return ButtonList;
 	}

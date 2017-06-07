@@ -23,29 +23,41 @@ import javafx.util.Duration;
  */
 public class MoveLine extends Group{
     public final int CircleRadius = 5;
-    public final int CircleSpeed = 5;
+    public final int CircleMoveTime = 500;
     private Timeline timeline = new Timeline();
     public Circle circle;
     public Polyline line;
-    public MoveLine(Double[] pointDoubles) {
+    public Double[] pointDoubles;
+    public MoveLine() {
         super();
+        this.pointDoubles = pointDoubles;
+    }
+    
+    public void update(Double[] pointDoubles) {
         line = new Polyline();
-        line.strokeProperty().setValue(Color.YELLOW);
-        line.strokeWidthProperty().set(4);
+        line.strokeProperty().setValue(Color.LIGHTGRAY);//Color.LIGHTCYAN);
+        line.strokeWidthProperty().set(3);
         line.setStrokeLineCap(StrokeLineCap.ROUND);
         line.getPoints().addAll(pointDoubles);
         
-        circle = new Circle(CircleRadius, Color.BLUE);
+        circle = new Circle(CircleRadius, Color.RED);
         circle.setStrokeType(StrokeType.CENTERED);
-        circle.setStrokeWidth(3);
-        circle.setEffect(new BoxBlur(5, 5, 1));
-
+        circle.setEffect(new BoxBlur(2, 2, 10));
+        circle.setTranslateX(-10);
+        
         int size = pointDoubles.length;
         double millis = 0;
+        double distsum = 0;
         for (int i = 0; i < size-2; i+=2) {
             double x = pointDoubles[i]-pointDoubles[i+2];
             double y = pointDoubles[i+1]-pointDoubles[i+3];
-            double needtime = Math.sqrt(x*x+y*y)*CircleSpeed;
+            double needtime = Math.sqrt(x*x+y*y);
+            distsum += needtime;
+        }
+        for (int i = 0; i < size-2; i+=2) {
+            double x = pointDoubles[i]-pointDoubles[i+2];
+            double y = pointDoubles[i+1]-pointDoubles[i+3];
+            double needtime = Math.sqrt(x*x+y*y)*CircleMoveTime/distsum;
             timeline.getKeyFrames().addAll(
                     new KeyFrame(new Duration(millis), // set start position
                     new KeyValue(circle.translateXProperty(), pointDoubles[i]),

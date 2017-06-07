@@ -26,8 +26,10 @@ public class InstQueue extends TableView<Inst> {
 		super();
 		this.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 		this.setPrefHeight(TomasuloDisplay.allheight / 5);
-		// this.setPrefWidth(TomasuloDisplay.allwidth/5);
 
+                //this.setPrefWidth(TomasuloDisplay.allwidth/5);
+
+                
 		cols = new TableColumn[items.length];
 		for (int i = 0; i < cols.length; ++i) {
 			cols[i] = new TableColumn<Object, Object>(items[i]);
