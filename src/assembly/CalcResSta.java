@@ -2,6 +2,7 @@ package assembly;
 
 import java.util.HashMap;
 
+import tomasulodisplay.MoveLine;
 import type.Instruction;
 import type.ResItem;
 import type.Value;
@@ -17,8 +18,9 @@ public class CalcResSta implements ResSta, CDBReceiver {
 	private Executor exe = null;
 	private Register reg = null;
 	private ResItem[] res = null;
+	private MoveLine[] lines;
 
-	public CalcResSta(String _name, Executor _exe, Register _reg) {
+	public CalcResSta(String _name, Executor _exe, Register _reg, MoveLine[] lines) {
 		// resSize = _resSize;
 		if (_name.equals(ADDER))
 			resSize = ADDER_RES_SIZE;
@@ -34,6 +36,8 @@ public class CalcResSta implements ResSta, CDBReceiver {
 			res[i] = new ResItem();
 			res[i].name = name + (i + 1);
 		}
+		
+		this.lines = lines;
 	}
 
 	@Override
@@ -80,6 +84,10 @@ public class CalcResSta implements ResSta, CDBReceiver {
 				res[i].ins.finish(Instruction.EN, cycle);
 				res[i].in = true;
 				exe.get(res[i]);
+				if(name.equals(ADDER))
+					lines[2].play();
+				else
+					lines[3].play();
 			}
 	}
 

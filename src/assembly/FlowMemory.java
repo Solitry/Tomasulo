@@ -3,6 +3,7 @@ package assembly;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import tomasulodisplay.MoveLine;
 import type.Instruction;
 import type.ResItem;
 import type.MemUnit;
@@ -13,7 +14,12 @@ public class FlowMemory implements Executor {
 	private ArrayList<ResItem> list = new ArrayList<ResItem>();
 
 	private ArrayList<MemUnit> storage = new ArrayList<MemUnit>();
+	private MoveLine[] lines;
 
+	public FlowMemory(MoveLine[] lines){
+		this.lines = lines;
+	}
+	
 	@Override
 	public void get(ResItem item) {
 		list.add(item);
@@ -70,11 +76,11 @@ public class FlowMemory implements Executor {
 
 		if (last.restTime < 0) {
 			assert (last.ins.opLabel == Instruction.INSTR_LD_ID);
-
 			double val = load(last.ins.src1);
 			cdb.receive(last, val);
 			last.ins.finish(Instruction.WB, cycle);
 			list.remove(0);
+			lines[9].play();
 			return true;
 		}
 		return false;

@@ -3,6 +3,7 @@ package assembly;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import tomasulodisplay.MoveLine;
 import type.Instruction;
 
 /**
@@ -14,13 +15,15 @@ public class InstrQueue {
 	private ArrayList<String> strList = null;
 	private ArrayList<Instruction> insList = null;
 	private int pos = 0;
+	MoveLine[] lines;
 	
-	public InstrQueue(ResSta _mem, ResSta _add, ResSta _mult) {
+	public InstrQueue(ResSta _mem, ResSta _add, ResSta _mult, MoveLine[] lines) {
 		mem = _mem;
 		add = _add;
 		mult = _mult;
 		strList = new ArrayList<String>();
 		insList = new ArrayList<Instruction>();
+		this.lines = lines;
 	}
 	
 	/**
@@ -44,6 +47,8 @@ public class InstrQueue {
 				add.getIns(i);
 				++pos;
 				i.finish(Instruction.ID, cycle);
+				if(lines[0] != null)
+					lines[0].play();
 			}
 			break;
 		case Instruction.INSTR_MUL_ID:
@@ -52,6 +57,8 @@ public class InstrQueue {
 				mult.getIns(i);
 				++pos;
 				i.finish(Instruction.ID, cycle);
+				if(lines[1] != null)
+					lines[1].play();
 			}
 			break;
 		case Instruction.INSTR_LD_ID:
@@ -59,6 +66,8 @@ public class InstrQueue {
 				mem.getIns(i);
 				++pos;
 				i.finish(Instruction.ID, cycle);
+				if(lines[4] != null)
+					lines[4].play();
 			}
 			break;
 		case Instruction.INSTR_ST_ID:
@@ -66,6 +75,8 @@ public class InstrQueue {
 				mem.getIns(i);
 				++pos;
 				i.finish(Instruction.ID, cycle);
+				if(lines[5] != null)
+					lines[5].play();
 			}
 			default:
 		}

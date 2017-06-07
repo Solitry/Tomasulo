@@ -21,7 +21,7 @@ public class Reg {
     		items[i] = new SimpleStringProperty("");
     }
     
-    public SimpleStringProperty NameProperty() {
+    public SimpleStringProperty NumProperty() {
         return items[0];
     }
     

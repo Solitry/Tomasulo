@@ -3,6 +3,8 @@ package assembly;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import tomasulodisplay.MoveLine;
+
 public class Controller {
 	private InstrQueue iq = null;
 	private Register reg = null;
@@ -19,19 +21,19 @@ public class Controller {
 	
 	private int cycle = 0;
 	
-	public Controller() {
+	public Controller(MoveLine[] lines) {
 		reg = new Register();
-		cdb = new CDB();
+		cdb = new CDB(lines);
 		
-		mem = new FlowMemory();
-		adder = new FlowAddExecutor();
-		multer = new FlowMulExecutor();
+		mem = new FlowMemory(lines);
+		adder = new FlowAddExecutor(lines);
+		multer = new FlowMulExecutor(lines);
 		
 		mb = new MemBuffer(mem, reg);
-		ar = new CalcResSta(CalcResSta.ADDER, adder, reg);
-		mr = new CalcResSta(CalcResSta.MULTER, multer, reg);
+		ar = new CalcResSta(CalcResSta.ADDER, adder, reg, lines);
+		mr = new CalcResSta(CalcResSta.MULTER, multer, reg, lines);
 		
-		iq = new InstrQueue(mb, ar, mr);
+		iq = new InstrQueue(mb, ar, mr, lines);
 		
 		cdb.addReceiver(mb);
 		cdb.addReceiver(ar);
@@ -152,7 +154,7 @@ public class Controller {
 		list.add("MULD F4,F0,F2");
 		list.add("ST F4,80");
 		*/
-		Controller con = new Controller();
+		Controller con = new Controller(new MoveLine[11]);
 		con.addIns(list);
 		for(int i = 1; i <= 100 && !con.isFinish(); ++i){
 			con.run();

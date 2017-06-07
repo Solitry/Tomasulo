@@ -2,6 +2,7 @@ package assembly;
 
 import java.util.ArrayList;
 
+import tomasulodisplay.MoveLine;
 import type.Instruction;
 import type.ResItem;
 
@@ -10,6 +11,11 @@ public class FlowMulExecutor implements Executor {
 	public final static int INSTR_DIV_TIME = 40;
 	
 	private ArrayList<ResItem> list = new ArrayList<ResItem>();
+	private MoveLine[] lines;
+	
+	public FlowMulExecutor(MoveLine[] lines){
+		this.lines = lines;
+	}
 	
 	@Override
 	public boolean write(CDB cdb, int cycle) {
@@ -24,6 +30,7 @@ public class FlowMulExecutor implements Executor {
 				cdb.receive(last, val);
 				last.ins.finish(Instruction.WB, cycle);
 				list.remove(i);
+				lines[7].play();
 				return true;
 			}
 		}

@@ -16,13 +16,7 @@ public class ResItem {
 	public int restTime = -1; // for Executor
 	
 	public void reset(){
-		ins = null;
-		busy = false;
-		in = false;
-		value[0] = null;
-		value[1] = null;
-		bypass = false;
-		loadRelyVal = null;
-		restTime = -1;
+		in = busy = false;
+		restTime = -2;
 	}
 }

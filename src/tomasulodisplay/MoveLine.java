@@ -27,10 +27,9 @@ public class MoveLine extends Group{
     private Timeline timeline = new Timeline();
     public Circle circle;
     public Polyline line;
-    public Double[] pointDoubles;
+    
     public MoveLine() {
         super();
-        this.pointDoubles = pointDoubles;
     }
     
     public void update(Double[] pointDoubles) {

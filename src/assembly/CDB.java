@@ -2,6 +2,7 @@ package assembly;
 
 import java.util.ArrayList;
 
+import tomasulodisplay.MoveLine;
 import type.ResItem;
 
 public class CDB {
@@ -10,6 +11,12 @@ public class CDB {
 	
 	private ArrayList<CDBReceiver> rec = new ArrayList<CDBReceiver>();
 	private ArrayList<CDBSender> sed = new ArrayList<CDBSender>();
+	
+	private MoveLine[] lines;
+
+	public CDB(MoveLine[] lines){
+		this.lines = lines;
+	}
 	
 	public void addReceiver(CDBReceiver _rec) {
 		rec.add(_rec);
@@ -22,6 +29,7 @@ public class CDB {
 	public void receive(ResItem item, double val) {
 		// set res free
 		item.busy = false;
+		lines[8].play();
 		// broadcast
 		for (CDBReceiver it: rec)
 			it.receive(item, val);

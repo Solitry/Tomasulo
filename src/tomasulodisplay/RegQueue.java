@@ -20,7 +20,7 @@ public class RegQueue extends TableView<Reg> {
 	private final ObservableList<Reg> data = FXCollections.observableArrayList();
 	private int Max_item;
 
-	static private String[] items = new String[] { "Name", "Val"};
+	static private String[] items = new String[] { "Num", "Val"};
 	@SuppressWarnings("rawtypes")
 	private TableColumn[] cols = null;
 
