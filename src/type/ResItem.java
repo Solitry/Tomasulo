@@ -16,7 +16,9 @@ public class ResItem {
 	public int restTime = -1; // for Executor
 	
 	public void reset(){
+		ins = null;
 		in = busy = false;
 		restTime = -2;
+		value[0] = value[1] = null;
 	}
 }

@@ -7,7 +7,6 @@ package tomasulodisplay;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -53,15 +52,13 @@ public class InstQueue extends TableView<Inst> {
 			data.add(ins);
 		}
 		this.setItems(data);
-                for (int i = 0; i < datas.length; ++i){
-			Inst ins = new Inst();
-                        if (datas[i][0]=="->") {
-                            this.getSelectionModel().select(i);
-                            if  (i%4==0)
-                            this.scrollTo(i);
+        for (int i = 0; i < datas.length; ++i){
+    		if (datas[i][0]=="->") {
+                this.getSelectionModel().select(i);
+                if  (i%4==0)
+                this.scrollTo(i);
 
-                        }
-                }
-
+            }
+        }
 	}
 }

@@ -74,7 +74,7 @@ public class FlowMemory implements Executor {
 
 		ResItem last = list.get(0);
 
-		if (last.restTime < 0) {
+		if (last.restTime < 0 && last.ins != null) {
 			assert (last.ins.opLabel == Instruction.INSTR_LD_ID);
 			double val = load(last.ins.src1);
 			cdb.receive(last, val);
@@ -126,6 +126,5 @@ public class FlowMemory implements Executor {
 	
 	public void reset(){
 		list.clear();
-		storage.clear();
 	}
 }

@@ -66,7 +66,7 @@ public class MemBuffer implements ResSta, CDBReceiver, CDBSender {
 		 * use FIFO on the queue of same-address ResItem to use FIFO on all
 		 * LD/ST instructions, use label only
 		 */
-		if (!x.busy)
+		if (!x.busy || x.ins == null)
 			return false;
 
 		int addr = x.ins.src1;
@@ -156,8 +156,8 @@ public class MemBuffer implements ResSta, CDBReceiver, CDBSender {
 			ResItem it = loadBuf[i];
 			datas[i][0] = it.name;
 			datas[i][1] = it.busy ? "--" : " ";
-			datas[i][2] = it.restTime > -1 ? String.valueOf(it.restTime) : it.restTime == -1 && it.busy ? "wait" : "";
-			datas[i][3] = it.ins != null ? it.ins.raw : "";
+			datas[i][2] = it.ins != null ? it.ins.raw : "";
+			datas[i][3] = it.restTime > -1 ? String.valueOf(it.restTime) : it.restTime == -1 && it.busy ? "wait" : "";
 			datas[i][4] = "";
 			datas[i][5] = it.ins != null ? Integer.toString(it.ins.src1) : "";
 		}
