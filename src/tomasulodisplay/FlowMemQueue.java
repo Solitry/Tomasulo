@@ -37,7 +37,7 @@ public class FlowMemQueue extends TableView<FlowMem> {
 
 		this.setItems(data);
 		this.getColumns().addAll(cols);
-
+                this.getSelectionModel().setCellSelectionEnabled(false);
 	}
 
 	public void setData(String[][] datas) {

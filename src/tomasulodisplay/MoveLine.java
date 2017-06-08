@@ -23,13 +23,15 @@ import javafx.util.Duration;
  */
 public class MoveLine extends Group{
     public final int CircleRadius = 5;
-    public final int CircleMoveTime = 500;
+    public final int CircleMoveTime = 700;
     private Timeline timeline = new Timeline();
-    public Circle circle;
-    public Polyline line;
+    private Circle circle;
+    private Polyline line;
+    private int kind;
     
-    public MoveLine() {
+    public MoveLine(int kind) {
         super();
+        this.kind = kind;
     }
     
     public void update(Double[] pointDoubles) {
@@ -41,9 +43,9 @@ public class MoveLine extends Group{
         
         circle = new Circle(CircleRadius, Color.RED);
         circle.setStrokeType(StrokeType.CENTERED);
-        circle.setEffect(new BoxBlur(2, 2, 10));
-        circle.setTranslateX(-10);
-        
+        circle.setEffect(new BoxBlur(5, 5, 1));
+        //circle.setTranslateX(-10);
+        circle.setVisible(false);
         int size = pointDoubles.length;
         double millis = 0;
         double distsum = 0;
@@ -52,6 +54,18 @@ public class MoveLine extends Group{
             double y = pointDoubles[i+1]-pointDoubles[i+3];
             double needtime = Math.sqrt(x*x+y*y);
             distsum += needtime;
+        }
+        if (kind==2) {
+                double needtime = CircleMoveTime/2;
+                timeline.getKeyFrames().addAll(
+                    new KeyFrame(new Duration(0)),
+                    new KeyFrame(new Duration(millis), 
+                    new KeyValue(circle.translateXProperty(), pointDoubles[0]),
+                    new KeyValue(circle.translateYProperty(), pointDoubles[1])));    
+                millis += needtime;
+        } 
+        if (kind!=0) {
+            distsum*=2;
         }
         for (int i = 0; i < size-2; i+=2) {
             double x = pointDoubles[i]-pointDoubles[i+2];
@@ -66,15 +80,16 @@ public class MoveLine extends Group{
                     new KeyValue(circle.translateYProperty(), pointDoubles[i+3])));
             millis += needtime;
         }     
-        
-        timeline.getKeyFrames().add(
-                    new KeyFrame(new Duration(millis+1), 
-                    new KeyValue(circle.translateXProperty(), -100),
-                    new KeyValue(circle.translateYProperty(), -100)));
+
+        /*timeline.getKeyFrames().add(
+                   new KeyFrame(new Duration(millis), 
+                    new KeyValue(circle.visibleProperty(), false))
+                );*/
         getChildren().addAll(line,circle);
     }
     
     public void play() {
+        circle.setVisible(true);
         timeline.play();
     }
 }

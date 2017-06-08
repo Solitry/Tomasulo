@@ -7,4 +7,4 @@ java tomasulodisplay.TomasuloDisplay
 ```
 输入文件样例: sampleinput.txt
 
-可在tomasulodisplay.TomasuloDisplay类中修改allwidth和allheight调节整个窗口的长宽。
+可在tomasulodisplay.TomasuloDisplay类中修改widthrate和heightrate调节模拟器窗口占整个屏幕的比例。

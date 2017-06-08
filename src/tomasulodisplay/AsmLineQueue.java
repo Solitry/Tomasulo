@@ -28,7 +28,8 @@ public class AsmLineQueue extends TableView<AsmLine>{
 		
 		this.setItems(data);
 		this.getColumns().addAll(cols);
-	}
+                this.getSelectionModel().setCellSelectionEnabled(false);	
+        }
 	
 	public void setData(String[][] datas){
 		data.get(0).setData(datas);

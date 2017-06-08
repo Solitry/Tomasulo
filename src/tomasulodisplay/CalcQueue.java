@@ -43,7 +43,8 @@ public class CalcQueue extends TableView<Calc> {
 		}
 		this.setItems(data);
 		this.getColumns().addAll(cols);
-	}
+                this.getSelectionModel().setCellSelectionEnabled(false);
+        }
 	
 	public void setData(String[][] datas){
 		for(int i = 0; i < maxItem; ++i)

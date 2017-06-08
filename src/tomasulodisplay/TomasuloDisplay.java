@@ -28,6 +28,8 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -37,6 +39,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import javax.swing.Spring;
 
 /**
  *
@@ -44,10 +47,13 @@ import javafx.util.Duration;
  */
 
 public class TomasuloDisplay extends Application {
-	static String ButtonStyle = "-fx-text-fill: white; " + "-fx-font: 15 arial;"
+        public static final double widthrate = 19.0/20;
+        public static final double heightrate = 18.0/20;
+        
+        static String ButtonStyle = "-fx-text-fill: white; " + "-fx-font: 15 arial;"
 			+ "-fx-font-weight: bold;-fx-background-color: linear-gradient(#61a2b1, #2A5058);"
 			+ "-fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );";
-
+        
 	// 须在start函数最后把部件加到显示区域
 	public InstQueue instqueue = new InstQueue();
 	public MemBufQueue loadqueue = new MemBufQueue("Load", 3);
@@ -60,10 +66,10 @@ public class TomasuloDisplay extends Application {
 	public AsmLineQueue alaQueue = new AsmLineQueue(2);
 	public AsmLineQueue mlaQueue = new AsmLineQueue(6);
 	public Rectangle Bus;
-	public static final int allheight = 800;
-	public static final int allwidth = 1450;
-	public static final double lineDelta = 20;
-	public static final double goldrate = 0.618;
+	public static int allheight;// = 800;
+	public static int allwidth;// = 1450;
+	public static double lineDelta = 20;
+	public static double goldrate = 0.618;
 	private Controller con = null;
 	private Timeline timer = null;
 	private Label cycCount = null;
@@ -76,7 +82,8 @@ public class TomasuloDisplay extends Application {
 
 	@Override
 	public void start(Stage primaryStage) {
-		primaryStage.setTitle("Tomasulo算法演示模拟平台");
+                
+                primaryStage.setTitle("Tomasulo算法演示模拟平台");
 		this.primaryStage = primaryStage;
 
 		// Init ListBox
@@ -189,16 +196,16 @@ public class TomasuloDisplay extends Application {
 		cycCount.setFont(new Font("Tahoma", 17));
 		bl.getChildren().addAll(ButtonList, cyclabel, cycCount);
 
-		inst2add = new MoveLine();
-		inst2mul = new MoveLine();
-		add2add = new MoveLine();
-		mul2mul = new MoveLine();
-		inst2load = new MoveLine();
-		inst2store = new MoveLine();
-		add2bus = new MoveLine();
-		mul2bus = new MoveLine();
-		bus2reg = new MoveLine();
-		load2bus = new MoveLine();
+		inst2add = new MoveLine(0);
+		inst2mul = new MoveLine(0);
+		add2add = new MoveLine(0);
+		mul2mul = new MoveLine(0);
+		inst2load = new MoveLine(0);
+		inst2store = new MoveLine(0);
+		add2bus = new MoveLine(1);
+		mul2bus = new MoveLine(1);
+		bus2reg = new MoveLine(2);
+		load2bus = new MoveLine(1);
 		con = new Controller(new MoveLine[] { inst2add, inst2mul, add2add, mul2mul, inst2load, inst2store, add2bus,
 				mul2bus, bus2reg, load2bus });
 
@@ -227,15 +234,19 @@ public class TomasuloDisplay extends Application {
 		buspane.getChildren().addAll(Bus, buslabel);
 		buspane.setPadding(new Insets(50, 0, 0, 0));
 		root.getChildren().addAll(l1, l2, l3, RegBox);
-		updownroot.getChildren().addAll(root, buspane);
+                
+                //Region updownspring = new Region();
+                //VBox.setVgrow(updownspring, Priority.ALWAYS);
+                updownroot.setSpacing(50);
+		updownroot.getChildren().addAll(root,buspane);
 		updownroot.setPrefHeight(allheight);
 		updownroot.setPrefWidth(allwidth);
-
 		// Scene scene = new Scene(root);
 		Scene scene = new Scene(new Group());
-		((Group) scene.getRoot()).getChildren().addAll(updownroot, inst2add, inst2mul, add2add, mul2mul, inst2load,
+		((Group) scene.getRoot()).getChildren().addAll(add2bus, mul2bus, bus2reg, load2bus,inst2add, inst2mul, add2add, mul2mul, inst2load,
 				inst2store);
-		((Group) scene.getRoot()).getChildren().addAll(add2bus, mul2bus, bus2reg, load2bus);
+
+                ((Group) scene.getRoot()).getChildren().addAll(updownroot);
 
 		primaryStage.setScene(scene);
 		primaryStage.show();
@@ -246,36 +257,36 @@ public class TomasuloDisplay extends Application {
 		double y1 = instqueue.getLayoutY() + instBox.getLayoutY() + l2.getLayoutY() + instqueue.getHeight();
 		double x2;
 		double y2 = addqueue.getLayoutY() + AddBox.getLayoutY() + l2.getLayoutY();// +addqueue.getHeight();
-
-		inst2add.update(new Double[] { x1, y1 + 2, x1, y2 - 2, });
+                int movedelta = 10;
+		inst2add.update(new Double[] { x1, y1 + 0, x1, y2 + movedelta, });
 
 		x1 = instqueue.getLayoutX() + instBox.getLayoutX() + l2.getLayoutX() + instqueue.getWidth() * goldrate;
 		y1 = instqueue.getLayoutY() + instBox.getLayoutY() + l2.getLayoutY() + instqueue.getHeight();
 		x2 = mulqueue.getLayoutX() + MulBox.getLayoutX() + l3.getLayoutX() + mulqueue.getWidth() * (1 - goldrate);
 		y2 = mulqueue.getLayoutY() + MulBox.getLayoutY() + l3.getLayoutY();
 
-		inst2mul.update(new Double[] { x1, y1 + 2, x1, y1 + (y2 - y1) * (1 - goldrate), x2,
-				y1 + (y2 - y1) * (1 - goldrate), x2, y2 - 2, });
+		inst2mul.update(new Double[] { x1, y1 + 0, x1, y1 + (y2 - y1) * (1 - goldrate), x2,
+				y1 + (y2 - y1) * (1 - goldrate), x2, y2 + movedelta, });
 
 		x1 = addqueue.getLayoutX() + AddBox.getLayoutX() + l2.getLayoutX() + addqueue.getWidth() * (1 - goldrate);
 		y1 = addqueue.getLayoutY() + AddBox.getLayoutY() + l2.getLayoutY() + addqueue.getHeight();
 		y2 = alaQueue.getLayoutY() + alaBox.getLayoutY() + l2.getLayoutY();
 
-		add2add.update(new Double[] { x1, y1 + 2, x1, y2 - 2, });
+		add2add.update(new Double[] { x1, y1 + 0, x1, y2 + movedelta, });
 
 		x1 = mulqueue.getLayoutX() + MulBox.getLayoutX() + l3.getLayoutX() + mulqueue.getWidth() * (1 - goldrate);
 		y1 = mulqueue.getLayoutY() + MulBox.getLayoutY() + l3.getLayoutY() + mulqueue.getHeight();
 		y2 = mlaQueue.getLayoutY() + mlaBox.getLayoutY() + l3.getLayoutY();
 
-		mul2mul.update(new Double[] { x1, y1 + 2, x1, y2 - 2, });
+		mul2mul.update(new Double[] { x1, y1 + 0, x1, y2 + movedelta, });
 
 		x1 = instqueue.getLayoutX() + instBox.getLayoutX() + l2.getLayoutX();
 		y1 = instqueue.getLayoutY() + instBox.getLayoutY() + l2.getLayoutY() + instqueue.getHeight() * (goldrate);
 		x2 = loadqueue.getLayoutX() + LoadBox.getLayoutX() + l1.getLayoutX() + loadqueue.getWidth();
 		y2 = loadqueue.getLayoutY() + LoadBox.getLayoutY() + l1.getLayoutY() + loadqueue.getHeight() * (goldrate);
 
-		inst2load.update(new Double[] { x1 - 2, y1, x1 - (x1 - x2) * (1 - goldrate), y1,
-				x1 - (x1 - x2) * (1 - goldrate), y2, x2 + 2, y2, });
+		inst2load.update(new Double[] { x1 - 0, y1, x1 - (x1 - x2) * (1 - goldrate), y1,
+				x1 - (x1 - x2) * (1 - goldrate), y2, x2 - movedelta, y2, });
 
 		x1 = instqueue.getLayoutX() + instBox.getLayoutX() + l2.getLayoutX();
 		y1 = instqueue.getLayoutY() + instBox.getLayoutY() + l2.getLayoutY() + instqueue.getHeight() * (1 - goldrate);
@@ -283,41 +294,33 @@ public class TomasuloDisplay extends Application {
 		y2 = storequeue.getLayoutY() + StoreBox.getLayoutY() + l1.getLayoutY()
 				+ storequeue.getHeight() * (1 - goldrate);
 
-		inst2store.update(new Double[] { x1 - 2, y1, x1 - (x1 - x2) * (goldrate), y1, x1 - (x1 - x2) * (goldrate), y2,
-				x2 + 2, y2, });
+		inst2store.update(new Double[] { x1 - 0, y1, x1 - (x1 - x2) * (goldrate), y1, x1 - (x1 - x2) * (goldrate), y2,
+				x2 - movedelta, y2, });
 
 		x1 = alaQueue.getLayoutX() + alaBox.getLayoutX() + l2.getLayoutX() + alaQueue.getWidth() * (1 - goldrate);
 		y1 = alaQueue.getLayoutY() + alaBox.getLayoutY() + l2.getLayoutY() + alaQueue.getHeight();
 		y2 = Bus.getLayoutY() + buspane.getLayoutY() + l1.getLayoutY();
 
-		add2bus.update(new Double[] { x1, y1 + 2, x1, y2 - 2, });
+		add2bus.update(new Double[] { x1, y1 + 0, x1, y2 + movedelta, });
 
 		x1 = mlaQueue.getLayoutX() + mlaBox.getLayoutX() + l3.getLayoutX() + mlaQueue.getWidth() * (1 - goldrate);
 		y1 = mlaQueue.getLayoutY() + mlaBox.getLayoutY() + l3.getLayoutY() + mlaQueue.getHeight();
 		y2 = Bus.getLayoutY() + buspane.getLayoutY() + l1.getLayoutY();
 
-		mul2bus.update(new Double[] { x1, y1 + 2, x1, y2 - 2, });
+		mul2bus.update(new Double[] { x1, y1 + 0, x1, y2 + movedelta, });
 
 		x1 = regqueue.getLayoutX() + RegBox.getLayoutX() + regqueue.getWidth() * (1 - goldrate);
 		y1 = regqueue.getLayoutY() + RegBox.getLayoutY() + regqueue.getHeight();
 		y2 = Bus.getLayoutY() + buspane.getLayoutY() + l1.getLayoutY();
 
-		bus2reg.update(new Double[] { x1, y2 - 2, x1, y1 + 2, });
+		bus2reg.update(new Double[] { x1, y2 + movedelta, x1, y1 - movedelta, });
 
 		x1 = loadqueue.getLayoutX() + LoadBox.getLayoutX() + l1.getLayoutX() + storequeue.getWidth() * (1 - goldrate);
 		y1 = loadqueue.getLayoutY() + LoadBox.getLayoutY() + l1.getLayoutY() + loadqueue.getHeight();
 		y2 = Bus.getLayoutY() + buspane.getLayoutY() + l1.getLayoutY();
 
-		load2bus.update(new Double[] { x1, y1 + 2, x1, y2 - 2, });
-		/*
-		 * x1 = storequeue.getLayoutX() + StoreBox.getLayoutX() +
-		 * l1.getLayoutX() + storequeue.getWidth() * (1 - goldrate); y1 =
-		 * storequeue.getLayoutY() + StoreBox.getLayoutY() + l1.getLayoutY() +
-		 * storequeue.getHeight(); y2 = Bus.getLayoutY() + buspane.getLayoutY()
-		 * + l1.getLayoutY();
-		 * 
-		 * store2bus.update(new Double[] { x1, y1 + 2, x1, y2 - 2, });
-		 */
+		load2bus.update(new Double[] { x1, y1 + 0, x1, y2 + movedelta, });
+
 	}
 
 	private GridPane initButtons() {
@@ -496,7 +499,13 @@ public class TomasuloDisplay extends Application {
 	 * @param args
 	 *            the command line arguments
 	 */
+        
 	public static void main(String[] args) {
-		launch(args);
+	        int screenWidth=((int)java.awt.Toolkit.getDefaultToolkit().getScreenSize().width);
+                int screenHeight = ((int)java.awt.Toolkit.getDefaultToolkit().getScreenSize().height); 
+		allheight = (int)(screenHeight*heightrate);
+                allwidth = (int)(screenWidth*widthrate);
+
+                launch(args);
 	}
 }

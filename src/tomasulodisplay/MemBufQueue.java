@@ -42,6 +42,7 @@ public class MemBufQueue extends TableView<MemBuf> {
 
 		this.setItems(data);
 		this.getColumns().addAll(cols);
+                this.getSelectionModel().setCellSelectionEnabled(false);
 	}
 	
 	public void setData(String[][] datas){
