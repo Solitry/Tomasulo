@@ -143,18 +143,20 @@ public class Controller {
 		list.add("ADDD F2,F8,F9");
 		list.add("ADDD F3,F8,F9");
 		*/
+		/*
 		list.add("DIVD F0,F8,F9");
 		list.add("MULD F1,F8,F9");
 		list.add("DIVD F2,F8,F9");
 		list.add("MULD F3,F8,F9");
-		/*
-		list.add("LD F0,80");
-		list.add("MULD F4,F0,F2");
-		list.add("ST F4,80");
-		list.add("LD F0,80");
-		list.add("MULD F4,F0,F2");
-		list.add("ST F4,80");
 		*/
+		
+		list.add("LD F0,80");
+		list.add("MULD F4,F0,F2");
+		list.add("ST F4,80");
+		list.add("LD F0,80");
+		list.add("MULD F4,F0,F2");
+		list.add("ST F4,80");
+		
 		Controller con = new Controller(new MoveLine[11]);
 		con.addIns(list);
 		for(int i = 1; i <= 100 && !con.isFinish(); ++i){

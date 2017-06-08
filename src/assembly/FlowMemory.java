@@ -80,7 +80,8 @@ public class FlowMemory implements Executor {
 			cdb.receive(last, val);
 			last.ins.finish(Instruction.WB, cycle);
 			list.remove(0);
-			lines[9].play();
+			if (lines[9] != null)
+				lines[9].play();
 			return true;
 		}
 		return false;

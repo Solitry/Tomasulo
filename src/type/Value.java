@@ -29,7 +29,8 @@ public class Value {
 	}
 	
 	public boolean wait(String name) {
-		return !ready() && Q.equals(name);
+		//System.err.println("wait " + Q + " " + name);
+		return Q != null && Q.equals(name);
 	}
 	
 	public String toString() {

@@ -84,10 +84,13 @@ public class CalcResSta implements ResSta, CDBReceiver {
 				res[i].ins.finish(Instruction.EN, cycle);
 				res[i].in = true;
 				exe.get(res[i]);
-				if(name.equals(ADDER))
-					lines[2].play();
-				else
-					lines[3].play();
+				if(name.equals(ADDER)) {
+					if (lines[2] != null)
+						lines[2].play();
+				} else {
+					if (lines[3] != null)
+						lines[3].play();
+				}
 			}
 	}
 

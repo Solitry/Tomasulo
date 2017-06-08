@@ -30,7 +30,8 @@ public class FlowMulExecutor implements Executor {
 				cdb.receive(last, val);
 				last.ins.finish(Instruction.WB, cycle);
 				list.remove(i);
-				lines[7].play();
+				if (lines[7] != null)
+					lines[7].play();
 				return true;
 			}
 		}

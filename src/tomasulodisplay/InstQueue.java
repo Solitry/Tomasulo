@@ -17,7 +17,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
  */
 public class InstQueue extends TableView<Inst> {
 	private final ObservableList<Inst> data = FXCollections.observableArrayList();
-	static private String[] items = new String[] { "St", "Ins", "ID", "EX", "MEM", "WB" };
+	static private String[] items = new String[] { "St", "Ins", "ID", "EN", "EX", "WB" };
 	@SuppressWarnings("rawtypes")
 	private TableColumn[] cols = null;
 

@@ -63,7 +63,7 @@ public class Instruction {
 			if (opName.equals(INSTR_TYPE[i]))
 				opLabel = i;
 		int p1 = str.indexOf(',');
-		if (opLabel < 4) {
+		if (opLabel < 4 && opLabel >= 0) {
 			int p2 = str.indexOf(',', p1 + 1);
 			if(str.charAt(p1 + 1) != 'F' || str.charAt(p2 + 1) != 'F')
 				throw new Exception();
@@ -74,11 +74,12 @@ public class Instruction {
 			dst = Integer.parseInt(str.substring(p0 + 2, p1));
 			src1 = Integer.parseInt(str.substring(p1 + 1));
 			src0 = -1;
-		} else {
+		} else if (opLabel == INSTR_ST_ID) {
 			src0 = Integer.parseInt(str.substring(p0 + 2, p1));
 			src1 = Integer.parseInt(str.substring(p1 + 1));
 			dst = -1;
-		}
+		} else
+			throw new Exception();
 		insLabel = count;
 		
 		for (int i = 0; i < STAGE_NUM; ++i)

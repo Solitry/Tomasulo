@@ -32,11 +32,11 @@ public class Inst {
         return items[2];
     }
     
-    public SimpleStringProperty EXProperty() {
+    public SimpleStringProperty ENProperty() {
         return items[3];
     }
 
-    public SimpleStringProperty MEMProperty() {
+    public SimpleStringProperty EXProperty() {
         return items[4];
     }
     

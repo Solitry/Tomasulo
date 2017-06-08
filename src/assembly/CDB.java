@@ -29,7 +29,8 @@ public class CDB {
 	public void receive(ResItem item, double val) {
 		// set res free
 		item.busy = false;
-		lines[8].play();
+		if (lines[8] != null)
+			lines[8].play();
 		// broadcast
 		for (CDBReceiver it: rec)
 			it.receive(item, val);
