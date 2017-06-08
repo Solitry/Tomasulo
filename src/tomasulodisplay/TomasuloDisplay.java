@@ -310,14 +310,14 @@ public class TomasuloDisplay extends Application {
 		y1 = regqueue.getLayoutY() + RegBox.getLayoutY() + regqueue.getHeight();
 		y2 = Bus.getLayoutY() + buspane.getLayoutY() + l1.getLayoutY();
 
-		bus2reg.update(new Double[] { x1, y2 + movedelta, x1, y1 - movedelta, });
+		bus2reg.update(new Double[] { x1, y2 , x1, y1 - movedelta, });
 
 		x1 = loadqueue.getLayoutX() + LoadBox.getLayoutX() + l1.getLayoutX() + storequeue.getWidth() * (1 - goldrate);
 		y1 = loadqueue.getLayoutY() + LoadBox.getLayoutY() + l1.getLayoutY() + loadqueue.getHeight();
 		y2 = Bus.getLayoutY() + buspane.getLayoutY() + l1.getLayoutY();
 
 		load2bus.update(new Double[] { x1, y1 + 0, x1, y2 + movedelta, });
-
+                //Bus.setVisible(false);
 	}
 
 	private GridPane initButtons() {

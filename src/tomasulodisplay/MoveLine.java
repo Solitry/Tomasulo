@@ -44,7 +44,7 @@ public class MoveLine extends Group{
         circle = new Circle(CircleRadius, Color.RED);
         circle.setStrokeType(StrokeType.CENTERED);
         circle.setEffect(new BoxBlur(5, 5, 1));
-        //circle.setTranslateX(-10);
+
         circle.setVisible(false);
         int size = pointDoubles.length;
         double millis = 0;
@@ -56,13 +56,15 @@ public class MoveLine extends Group{
             distsum += needtime;
         }
         if (kind==2) {
-                double needtime = CircleMoveTime/2;
-                timeline.getKeyFrames().addAll(
-                    new KeyFrame(new Duration(0)),
-                    new KeyFrame(new Duration(millis), 
+            double needtime = CircleMoveTime/2;
+            timeline.getKeyFrames().addAll(
+                    new KeyFrame(new Duration(millis), // set start position
                     new KeyValue(circle.translateXProperty(), pointDoubles[0]),
-                    new KeyValue(circle.translateYProperty(), pointDoubles[1])));    
-                millis += needtime;
+                    new KeyValue(circle.translateYProperty(), pointDoubles[1]+5)),
+                    new KeyFrame(new Duration(millis+needtime), // set end position 
+                    new KeyValue(circle.translateXProperty(), pointDoubles[0]),
+                    new KeyValue(circle.translateYProperty(), pointDoubles[1])));
+            millis += needtime;
         } 
         if (kind!=0) {
             distsum*=2;
@@ -80,16 +82,15 @@ public class MoveLine extends Group{
                     new KeyValue(circle.translateYProperty(), pointDoubles[i+3])));
             millis += needtime;
         }     
+        //System.err.println(this.kind+"　"+millis);
 
-        /*timeline.getKeyFrames().add(
-                   new KeyFrame(new Duration(millis), 
-                    new KeyValue(circle.visibleProperty(), false))
-                );*/
+        
         getChildren().addAll(line,circle);
     }
     
     public void play() {
         circle.setVisible(true);
+        System.err.println("play"+this.kind);
         timeline.play();
     }
 }
